@@ -1,0 +1,16 @@
+  language: "zh"
+
+  pipeline:
+  - name: "tokenizer_jieba"
+  - name: "bert_vectors_featurizer"
+    ip: '127.0.0.1'
+    port: 5555
+    port_out: 5556
+    show_server_config: True
+    timeout: 10000
+  #- name: "active_bert_nerual_classifier"
+  - name: "intent_estimator_classifier_tensorflow_embedding_bert"
+  - name: "nlp_spacy"
+  - name: "intent_entity_featurizer_regex"
+  - name: "ner_bilstm_crf"
+  - name: "ner_synonyms"

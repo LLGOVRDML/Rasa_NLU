@@ -1,0 +1,22 @@
+INFO:rasa_nlu_gao.data_router:Logging of requests is disabled. (No 'request_log' directory configured)
+INFO:rasa_nlu_gao.data_router:Logging of requests is disabled. (No 'request_log' directory configured)
+INFO:rasa_nlu_gao.data_router:Logging of requests is disabled. (No 'request_log' directory configured)
+WARNING:py.warnings:D:\Rasa_NLU\rasa_nlu_gao\utils\__init__.py:236: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  return yaml.load(read_file(filename, "utf-8"))
+
+INFO:__main__:Started http server on port 5000
+INFO:rasa_nlu_gao.data_router:Logging of requests is disabled. (No 'request_log' directory configured)
+WARNING:py.warnings:D:\Rasa_NLU\rasa_nlu_gao\utils\__init__.py:236: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  return yaml.load(read_file(filename, "utf-8"))
+
+INFO:__main__:Started http server on port 5000
+INFO:rasa_nlu_gao.components:Added 'nlp_spacy' to component cache. Key 'nlp_spacy-zh'.
+INFO:tensorflow:Restoring parameters from D:\Rasa_NLU\projects\default\default\ner_bilstm_crf.ckpt
+DEBUG:jieba:Building prefix dict from the default dictionary ...
+DEBUG:jieba:Dumping model to file cache C:\Users\weizhen\AppData\Local\Temp\jieba.cache
+DEBUG:jieba:Loading model cost 1.419 seconds.
+DEBUG:jieba:Prefix dict has been built succesfully.
+INFO:rasa_nlu_gao.featurizers.bert_vectors_featurizer:bert vectors featurizer finished
+ERROR:rasa_nlu_gao.data_router:tenanetId is default,botId is default parsing data text : 如何办理社保卡
+NoneType: None
+INFO:__main__:parse time cost 31.11 s
