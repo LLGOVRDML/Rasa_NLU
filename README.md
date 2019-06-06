@@ -1,178 +1,112 @@
-# Rasa NLU GQ
-Rasa NLU (Natural Language Understanding) 是一个自然语义理解的工具，举个官网的例子如下：
+# HT_NLU
+High talk nalture language understanding platform of LingLing technology . Ltd
 
-> *"I'm looking for a Mexican restaurant in the center of town"*
 
-And returning structured data like:
+# LingLing Technology Dalian Team's project
 
+## Sering bert-as-service model<br>
+
+1、clone HT_NLU project to the local machine <br>
 ```
-  intent: search_restaurant
-  entities: 
-    - cuisine : Mexican
-    - location : center
-```
-
-## Intent of this project
-这个项目的目的和初衷，是由于官方的rasa nlu里面提供的components和models并不能满足实际需求。所以我自定义了一些components，并发布到Pypi上。可以通过`pip install rasa-nlu-gao`下载。后续会不断往里面填充和优化组件，也欢迎大家贡献。
-
-## New features
-目前新增的特性如下（请下载最新的rasa-nlu-gao版本）：
-  - 新增了实体识别的模型，一个是bilstm+crf，一个是idcnn+crf膨胀卷积模型，对应的yml文件配置如下：
-  ```
-    language: "zh"
-
-    pipeline:
-    - name: "tokenizer_jieba"
-    - name: "intent_featurizer_count_vectors"
-      token_pattern: "(?u)\b\w+\b"
-    - name: "intent_classifier_tensorflow_embedding"
-    - name: "ner_bilstm_crf"
-      lr: 0.001
-      char_dim: 100
-      lstm_dim: 100
-      batches_per_epoch: 10
-      seg_dim: 20
-      num_segs: 4
-      batch_size: 200
-      tag_schema: "iobes"
-      model_type: "bilstm" # 模型支持两种idcnn膨胀卷积模型或bilstm双向lstm模型
-      clip: 5
-      optimizer: "adam"
-      dropout_keep: 0.5
-      steps_check: 100
-  ```
-  - 新增了jieba词性标注的模块，可以方便识别名字，地名，机构名等等jieba能够支持的词性，对应的yml文件配置如下：
-  ```
-    language: "zh"
-
-    pipeline:
-    - name: "tokenizer_jieba"
-    - name: "ner_crf"
-    - name: "jieba_pseg_extractor"
-      part_of_speech: ["nr", "ns", "nt"]
-    - name: "intent_featurizer_count_vectors"
-      OOV_token: oov
-      token_pattern: "(?u)\b\w+\b"
-    - name: "intent_classifier_tensorflow_embedding"
-  ```
-  - 新增了根据实体反向修改意图，对应的文件配置如下：
-  ```
-    language: "zh"
-
-    pipeline:
-    - name: "tokenizer_jieba"
-    - name: "ner_crf"
-    - name: "jieba_pseg_extractor"
-    - name: "intent_featurizer_count_vectors"
-      OOV_token: oov
-      token_pattern: '(?u)\b\w+\b'
-    - name: "intent_classifier_tensorflow_embedding"
-    - name: "entity_edit_intent"
-      entity: ["nr"]
-      intent: ["enter_data"]
-      min_confidence: 0
-  ```
-  - 新增了word2vec提取词向量特征，对应的配置文件如下：
-  ```
-    language: "zh"
-
-    pipeline:
-    - name: "tokenizer_jieba"
-    - name: "intent_featurizer_wordvector"
-      vector: "data/vectors.txt"
-    - name: "intent_classifier_tensorflow_embedding"
-    - name: "ner_crf"
-    - name: "jieba_pseg_extractor"
-  ```
-  - 新增了bert模型提取词向量特征，对应的配置文件如下：
-  ```
-    language: "zh"
-
-    pipeline:
-    - name: "tokenizer_jieba"
-    - name: "bert_vectors_featurizer"
-      ip: '172.16.10.46'
-      port: 5555
-      port_out: 5556
-      show_server_config: True
-      timeout: 10000
-    - name: "intent_classifier_tensorflow_embedding"
-    - name: "ner_crf"
-    - name: "jieba_pseg_extractor"
-  ```
-  - 新增了对CPU和GPU的利用率的配置，主要是`intent_classifier_tensorflow_embedding`和`ner_bilstm_crf`这两个使用到tensorflow的组件，配置如下（当然config_proto可以不配置，默认值会将资源全部利用）：
-  ```
-    language: "zh"
-
-    pipeline:
-    - name: "tokenizer_jieba"
-    - name: "intent_featurizer_count_vectors"
-      token_pattern: '(?u)\b\w+\b'
-    - name: "intent_classifier_tensorflow_embedding"
-      config_proto: {
-        "device_count": 4,
-        "inter_op_parallelism_threads": 0,
-        "intra_op_parallelism_threads": 0,
-        "allow_growth": True
-      }
-    - name: "ner_bilstm_crf"
-      config_proto: {
-        "device_count": 4,
-        "inter_op_parallelism_threads": 0,
-        "intra_op_parallelism_threads": 0,
-        "allow_growth": True
-      }
-  ```
-  - 新增了`embedding_bert_intent_classifier`分类器，对应的配置文件如下：
-  ```
-    language: "zh"
-
-    pipeline:
-    - name: "tokenizer_jieba"
-    - name: "bert_vectors_featurizer"
-      ip: '172.16.10.46'
-      port: 5555
-      port_out: 5556
-      show_server_config: True
-      timeout: 10000
-    - name: "intent_classifier_tensorflow_embedding_bert"
-    - name: "ner_crf"
-    - name: "jieba_pseg_extractor"
-  ```
-  
-   - 在基础词向量使用bert的情况下，后端的分类器使用tensorflow高级api完成，tf.estimator,tf.data,tf.example,tf.saved_model
-   `intent_estimator_classifier_tensorflow_embedding_bert`分类器，对应的配置文件如下：
-  ```
-  language: "zh"
-
-  pipeline:
-  - name: "tokenizer_jieba"
-  - name: "bert_vectors_featurizer"
-    ip: '127.0.0.1'
-    port: 5555
-    port_out: 5556
-    show_server_config: True
-    timeout: 10000
-  - name: "intent_estimator_classifier_tensorflow_embedding_bert"
-  - name: "nlp_spacy"
-  - name: "ner_crf"
-  ```
-
-## Quick Install
-```
-pip install rasa-nlu-gao
+git clone https://github.com/LLGOVRDML/HT_NLU.git
 ```
 
-## 🤖 Running of the bot
-To train the NLU model:
+2、Serving bert as service model as service<br>
+ cmd -->  Windows+R
 ```
-python -m rasa_nlu_gao.train -c sample_configs/config_embedding_bilstm.yml --data data/examples/rasa/rasa_dataset_training.json --path models
+pip install bert-serving-server -i https://mirrors.aliyun.com/pypi/simple
+pip install bert-serving-client -i https://mirrors.aliyun.com/pypi/simple
+cd ${yourpath}/HT_NLU/bert-as-service
+bert-serving-start -model_dir D:\chinese_L-12_H-768_A-12 -tuned_model_dir C:\Users\weizhen\Desktop\NLU\rasa_model_output -ckpt_name=model.ckpt-1028
+```
+ ![image](https://github.com/LLGOVRDML/HT_NLU/raw/master/bert_start.PNG)
+when you see the log print "ready and listening" it means that the bert server is ready , and we can go to the next step <br>
+
+
+
+
+## Start rasa_nlu_gq server for classification process <br>
+
+
+0、cd the root project folder , and double click "visualcppbuildtools full.exe" to install the c++ compiler in windows<br>
+
+
+
+
+
+1、install related python packages<br>
+```
+cd ${yourpath}/HT_NLU/rasa_nlu_gq
+pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple
+pip install -U bert-serving-client -i https://mirrors.aliyun.com/pypi/simple
+pip install spacy==2.0.16 -i https://mirrors.aliyun.com/pypi/simple
+pip install /usr/local/src/zh_core_web_sm-2.0.5.tar.gz -i https://mirrors.aliyun.com/pypi/simple
+python -m spacy link zh_core_web_sm zh
+pip install -r ./requirements.txt -i https://mirrors.aliyun.com/pypi/simple
+pip install tensorflow -i https://mirrors.aliyun.com/pypi/simple
+pip install jieba -i https://mirrors.aliyun.com/pypi/simple
+pip install GPUtil -i https://mirrors.aliyun.com/pypi/simple
+pip install sklearn_crfsuite==0.3.6 -i https://mirrors.aliyun.com/pypi/simple
+pip install scikit-learn==0.19.2 -i https://mirrors.aliyun.com/pypi/simple
+pip install numpy -i https://mirrors.aliyun.com/pypi/simple
+pip install scipy -i https://mirrors.aliyun.com/pypi/simple
 ```
 
-To run the NLU model:
+2、open project in pycharm and edit execution path<br>
+after the previous step , you can open the rasa_nlu_gq project in the pycharm ide <br>
+and edit the configuration<br>
+
+
+in pycharm edit configuration 
+
+serving paramaters :
 ```
-python -m rasa_nlu_gao.server -c sample_configs/config_embedding_bilstm.yml --path models
+-c sample_configs/config_embedding_bert_intent_estimator_classifier.yml --path projects/bert_gongan_v4
+```
+training parameters:
+```
+-c sample_configs/config_embedding_bert_intent_estimator_classifier.yml --data data/examples/luis/HighTalkSQSWLuisAppStaging-GA-20180824.json --path projects/bert_gongan_v4
 ```
 
-## Some Examples
-具体的例子请看[rasa_chatbot_cn](https://github.com/GaoQ1/rasa_chatbot_cn)
+ ![image](https://github.com/LLGOVRDML/HT_NLU/raw/master/edit_config.PNG)
+ 
+3、start the rasa_nlu_gq server<br>
+and press the run button for running<br>
+
+ ![image](https://github.com/LLGOVRDML/HT_NLU/raw/master/starting_rasa.PNG)
+ 
+ 
+## test via browser<br>
+ ![image](https://github.com/LLGOVRDML/HT_NLU/raw/master/test_via_browser.PNG)
+
+
+#### train rasa process<br>
+train rasa nlu with the bert words vectors
+```
+python train.py -c sample_configs/config_embedding_bert_intent_classifier.yml --data data/examples/luis/HighTalkSQSWLuisAppStaging-GA-20180824.json --path projects/bert_gongan_v4
+```
+
+
+## Deployed in docker<br>
+#### build rasa docker image<br>
+```
+cd rasa_nlu_gq
+docker build -t rasa_nlu_gq:v1.0 .
+
+```
+#### build bert-as-service docker image<br>
+```
+cd bert-as-service
+docker build -t bert-as-service:v1.0 .
+
+```
+#### first run bert-as-service image<br>
+```
+docker run -it -p 5555:5555 -p 5556:5556 bert-as-service:v1.0
+
+```
+#### changing rasa_nlu_gq model's ip endpoint and rasa project's ip call out endpoint , after that you can run the rasa docker image<br>
+```
+docker run -it -p 5000:5000 rasa_nlu_gq:v1.0
+
+```
