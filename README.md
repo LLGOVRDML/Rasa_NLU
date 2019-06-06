@@ -8,7 +8,7 @@ High talk nalture language understanding platform of LingLing technology . Ltd
 
 1、clone HT_NLU project to the local machine <br>
 ```
-git clone https://github.com/LLGOVRDML/HT_NLU.git
+git clone https://github.com/LLGOVRDML/Rasa_NLU.git
 ```
 
 2、Serving bert as service model as service<br>
@@ -36,20 +36,7 @@ when you see the log print "ready and listening" it means that the bert server i
 
 1、install related python packages<br>
 ```
-cd ${yourpath}/HT_NLU/rasa_nlu_gq
-pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple
-pip install -U bert-serving-client -i https://mirrors.aliyun.com/pypi/simple
-pip install spacy==2.0.16 -i https://mirrors.aliyun.com/pypi/simple
-pip install /usr/local/src/zh_core_web_sm-2.0.5.tar.gz -i https://mirrors.aliyun.com/pypi/simple
-python -m spacy link zh_core_web_sm zh
-pip install -r ./requirements.txt -i https://mirrors.aliyun.com/pypi/simple
-pip install tensorflow -i https://mirrors.aliyun.com/pypi/simple
-pip install jieba -i https://mirrors.aliyun.com/pypi/simple
-pip install GPUtil -i https://mirrors.aliyun.com/pypi/simple
-pip install sklearn_crfsuite==0.3.6 -i https://mirrors.aliyun.com/pypi/simple
-pip install scikit-learn==0.19.2 -i https://mirrors.aliyun.com/pypi/simple
-pip install numpy -i https://mirrors.aliyun.com/pypi/simple
-pip install scipy -i https://mirrors.aliyun.com/pypi/simple
+pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
 ```
 
 2、open project in pycharm and edit execution path<br>
@@ -65,7 +52,7 @@ serving paramaters :
 ```
 training parameters:
 ```
--c sample_configs/config_embedding_bert_intent_estimator_classifier.yml --data data/examples/luis/HighTalkSQSWLuisAppStaging-GA-20180824.json --path projects/bert_gongan_v4
+-c sample_configs/config_embedding_bert_intent_estimator_classifier.yml --data data/examples/luis/HighTalkSQSWLuisAppStaging-GA-20180824.json --path projects
 ```
 
  ![image](https://github.com/LLGOVRDML/HT_NLU/raw/master/edit_config.PNG)
