@@ -301,7 +301,6 @@ def configure_colored_logging(loglevel):
     field_styles['asctime'] = {}
     level_styles = coloredlogs.DEFAULT_LEVEL_STYLES.copy()
     level_styles['debug'] = {}
-    logging.basicConfig(filename='log/log.txt')
 
     coloredlogs.install(
             level=loglevel,

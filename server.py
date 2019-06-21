@@ -27,7 +27,6 @@ from rasa_nlu_gao.version import __version__
 from rasa_nlu_gao.model import MINIMUM_COMPATIBLE_VERSION
 
 logger = logging.getLogger(__name__)
-handler = logging.FileHandler("log.txt")
 
 def create_argument_parser():
     parser = argparse.ArgumentParser(description='parse incoming text')
