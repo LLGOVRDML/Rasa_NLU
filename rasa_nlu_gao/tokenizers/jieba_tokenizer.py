@@ -7,6 +7,7 @@ import glob
 import logging
 import os
 import shutil
+import datetime
 
 from rasa_nlu_gao.components import Component
 from rasa_nlu_gao.config import RasaNLUModelConfig
@@ -63,6 +64,23 @@ class JiebaTokenizer(Tokenizer, Component):
 
     def train(self, training_data, config, **kwargs):
         # type: (TrainingData, RasaNLUModelConfig, **Any) -> None
+
+        if self.dictionary_path == None:
+            lookup_tables = training_data.lookup_tables
+            lookup_list = []
+            for item in lookup_tables:
+                lookup_list.extend(item["elements"])
+
+            timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+
+            dictionary_path = os.path.join(os.getcwd(), "dictionary/dictionary_" + timestamp + ".txt")
+            dictionary_file = open(dictionary_path, "w", encoding='utf-8')
+            for word in lookup_list:
+                dictionary_file.write(word)
+                dictionary_file.write('\n')
+            dictionary_file.close()
+            self.dictionary_path = os.path.dirname(dictionary_path)
+
         for example in training_data.training_examples:
             example.set("tokens", self.tokenize(example.text))
 
@@ -124,6 +142,12 @@ class JiebaTokenizer(Tokenizer, Component):
                                                   JIEBA_CUSTOM_DICTIONARY_PATH)
             self.copy_files_dir_to_dir(self.dictionary_path,
                                        target_dictionary_path)
+
+            for f in os.listdir(self.dictionary_path):
+                filepath = os.path.join(self.dictionary_path, f)
+                if os.path.isfile(filepath):
+                    os.remove(filepath)
+
 
             # set dictionary_path of model metadata to relative path
             model_dictionary_path = JIEBA_CUSTOM_DICTIONARY_PATH
