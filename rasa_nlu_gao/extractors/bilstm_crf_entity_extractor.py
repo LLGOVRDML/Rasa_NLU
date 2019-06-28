@@ -271,7 +271,9 @@ class BilstmCRFEntityExtractor(EntityExtractor):
 
 
         with graph_bilstm.as_default():
+            meta["is_training"] = False
             model = Model(meta)
+
         sess = tf.Session(config=tf_config,graph=graph_bilstm)
         if model_dir and meta.get("classifier_file"):
             file_name = meta.get("classifier_file")

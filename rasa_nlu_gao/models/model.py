@@ -21,6 +21,7 @@ class Model(object):
         self.num_tags = config["num_tags"]
         self.num_chars = config["num_chars"]  # 样本中总字数
         self.num_segs = 4 # 0,1,2,3
+        self.is_training = config["is_training"]
 
         self.global_step = tf.Variable(0, trainable=False)
         self.best_dev_f1 = tf.Variable(0.0, trainable=False)
@@ -95,7 +96,7 @@ class Model(object):
             model_inputs = tf.nn.dropout(embedding, self.dropout)
 
             # ldcnn layer
-            model_outputs = self.IDCNN_layer(model_inputs)
+            model_outputs = self.IDCNN_layer(model_inputs,is_training=self.is_training)
 
             # logits for tags
             self.logits = self.project_layer_idcnn(model_outputs)
@@ -187,7 +188,7 @@ class Model(object):
 
     # Iterated Dilated CNN 膨胀卷积网络
     def IDCNN_layer(self, model_inputs,
-                    name=None):
+                    name=None,is_training=True):
         """
         :param idcnn_inputs: [batch_size, num_steps, emb_size] 
         :return: [batch_size, num_steps, cnn_output_width]
@@ -197,8 +198,6 @@ class Model(object):
         # shape(?, ?, 120) ——> shape(?, 1, ?, 120)
         model_inputs = tf.expand_dims(model_inputs, 1)
         reuse = False
-        if self.dropout == 1.0:
-            reuse = True
         with tf.variable_scope("idcnn" if not name else name):
             #shape=[1*3*120*100]
             shape = [1, self.filter_width, self.embedding_dim,
@@ -247,7 +246,7 @@ class Model(object):
                             totalWidthForLastDim += self.num_filter
                         layerInput = conv
             finalOut = tf.concat(axis=3, values=finalOutFromLayers)
-            keepProb = 1.0 if reuse else 0.5
+            keepProb = 0.5 if is_training else 1.0
             finalOut = tf.nn.dropout(finalOut, keepProb)
 
             # Removes dimensions of size 1 from the shape of a tensor.
