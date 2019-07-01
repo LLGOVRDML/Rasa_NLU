@@ -10,6 +10,7 @@ from functools import wraps
 
 import simplejson
 import six
+import numpy as np
 from builtins import str
 from klein import Klein
 from twisted.internet import reactor, threads
@@ -162,6 +163,15 @@ def dump_to_data_file(data):
     if isinstance(data, six.string_types):
         data_string = data
     else:
+
+        if "rasa_nlu_data" in data:
+            if "common_examples" in data["rasa_nlu_data"]:
+                common_examples = data["rasa_nlu_data"]["common_examples"]
+                # indices = np.random.permutation(len(common_examples))
+                # common_examples =common_examples[indices]
+                np.random.shuffle(common_examples)
+                data["rasa_nlu_data"]["common_examples"] = common_examples
+
         data_string = utils.json_to_string(data)
 
     return utils.create_temporary_file(data_string, "_training_data")

@@ -266,6 +266,7 @@ def save_model(sess, model, checkpoint_path, logger):
 
 def create_model(session, Model_class, config, logger):
     # create model, reuse parameters if exists
+    config["is_training"]=True
     model = Model_class(config)
 
     logger.warning("Created model with fresh parameters.")
