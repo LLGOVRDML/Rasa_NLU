@@ -2,7 +2,8 @@ version: '2'
 
 services:
   rasa_nlu_ssoc:
-    image: rasa_nlu_ssoc:3.0
+    image: rasa_nlu_ssoc:5.0
+    build: .
     ports:
     - "5000:5000"
     volumes:

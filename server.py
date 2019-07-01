@@ -251,11 +251,11 @@ class RasaNLU(object):
                 returnValue(json_to_string(response))
             except InvalidProjectError as e:
                 request.setResponseCode(404)
-                returnValue(json_to_string({ "error":{ "statusCode": 404, "message": "{}".format(e) }}))
+                returnValue(json_to_string({ "error":{ "statusCode": 404, "message": "{}".format(str(e)) }}))
             except Exception as e:
                 request.setResponseCode(500)
                 logger.exception("error in parse function :" + e)
-                returnValue(json_to_string({ "error":{ "statusCode": 500, "message": "{}".format(e) }}))
+                returnValue(json_to_string({ "error":{ "statusCode": 500, "message": "{}".format(str(e)) }}))
 
     @app.route("/version", methods=['GET', 'OPTIONS'])
     @requires_auth
@@ -365,7 +365,7 @@ class RasaNLU(object):
         except Exception as e:
             request.setResponseCode(400)
             returnValue(json_to_string({"Code": "0",
-                                        "Message": "{}".format(e),
+                                        "Message": "{}".format(str(e)),
                                         "TenanetID": tenanetId,
                                         "BotRecordId": botId}))
 
@@ -387,19 +387,19 @@ class RasaNLU(object):
         except MaxTrainingError as e:
             request.setResponseCode(403)
             returnValue(json_to_string({"Code": "0",
-                                        "Message": "{}".format(e),
+                                        "Message": "{}".format(str(e)),
                                         "TenanetID": tenanetId,
                                         "BotRecordId": botId}))
         except InvalidProjectError as e:
             request.setResponseCode(404)
             returnValue(json_to_string({"Code": "0",
-                                        "Message": "{}".format(e),
+                                        "Message": "{}".format(str(e)),
                                         "TenanetID": tenanetId,
                                         "BotRecordId": botId}))
         except TrainingException as e:
             request.setResponseCode(500)
             returnValue(json_to_string({"Code": "0",
-                                        "Message": "{}".format(e),
+                                        "Message": "{}".format(str(e)),
                                         "TenanetID": tenanetId,
                                         "BotRecordId": botId}))
 
@@ -424,7 +424,7 @@ class RasaNLU(object):
             returnValue(json_to_string(response))
         except Exception as e:
             request.setResponseCode(500)
-            returnValue(json_to_string({"error": "{}".format(e)}))
+            returnValue(json_to_string({"error": "{}".format(str(e))}))
 
 
     @app.route("/delete", methods=['GET', 'OPTIONS'])
@@ -452,7 +452,7 @@ class RasaNLU(object):
         except Exception as e:
             request.setResponseCode(500)
             returnValue(json_to_string({"Code": "0",
-                                        "Message": "{}".format(e),
+                                        "Message": "{}".format(str(e)),
                                         "TenanetID": tenanetId,
                                         "BotRecordId": botId}))
 
@@ -475,8 +475,8 @@ class RasaNLU(object):
             return simplejson.dumps(response)
         except Exception as e:
             request.setResponseCode(500)
-            logger.exception(e)
-            return simplejson.dumps({"error": "{}".format(e)})
+            logger.exception(str(e))
+            return simplejson.dumps({"error": "{}".format(str(e))})
 
 
 if __name__ == '__main__':
