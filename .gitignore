@@ -2,7 +2,6 @@
 *pyc
 dist/
 data/*
-!data/examples
 !data/test
 !data/README.md
 docs/_build
@@ -32,12 +31,10 @@ tmp_training_data.json
 .DS_Store
 models/
 !rasa_nlu_gao/models
-projects/
 test_models/model_*
 test_projects/test_project_*
 
 rasa_nlu/tmbo_test.py
 .mypy_cache/
-*.tar.gz
 docs/key
 docs/key.pub
