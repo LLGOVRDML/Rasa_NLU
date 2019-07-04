@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  rasa_nlu_ssoc:
+    image: rasa_nlu_ssoc:5.0
+    build:
+      context: .
+      dockerfile: Dockerfile_sh
+    ports:
+    - "5000:5000"
+    volumes:
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/ssoc/config_embedding_bert_intent_estimator_classifier.yml:/usr/local/src/sample_configs/config_embedding_bert_intent_estimator_classifier.yml
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/ssoc/metadata.json:/usr/local/src/projects/default/default/metadata.json
