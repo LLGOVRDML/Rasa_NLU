@@ -9,6 +9,7 @@ import os
 import shutil
 import datetime
 
+
 from rasa_nlu_gao.components import Component
 from rasa_nlu_gao.config import RasaNLUModelConfig
 from rasa_nlu_gao.tokenizers import Tokenizer, Token
@@ -40,6 +41,8 @@ class JiebaTokenizer(Tokenizer, Component):
         # path to dictionary file or None
         self.dictionary_path = self.component_config.get('dictionary_path')
 
+
+
     @classmethod
     def required_packages(cls):
         # type: () -> List[Text]
@@ -56,11 +59,18 @@ class JiebaTokenizer(Tokenizer, Component):
         """
         import jieba
 
+
         jieba_userdicts = glob.glob("{}/*".format(path))
         for jieba_userdict in jieba_userdicts:
             logger.info("Loading Jieba User Dictionary at "
                         "{}".format(jieba_userdict))
-            jieba.load_userdict(jieba_userdict)
+            with open(jieba_userdict,"r",encoding='utf-8') as f:
+                while 1:
+                    word = f.readline()
+                    if not word:
+                        break
+                    word = word.replace("\n", "")
+                    jieba.add_word(word,freq=2000)
 
     def train(self, training_data, config, **kwargs):
         # type: (TrainingData, RasaNLUModelConfig, **Any) -> None
@@ -90,14 +100,15 @@ class JiebaTokenizer(Tokenizer, Component):
 
     def tokenize(self, text):
         # type: (Text) -> List[Token]
-        import jieba
 
+        import jieba
         if self.dictionary_path is not None:
             self.load_custom_dictionary(self.dictionary_path)
 
         tokenized = jieba.tokenize(text)
 
         tokens = [Token(word, start) for (word, start, end) in tokenized]
+        print(tokens)
         return tokens
 
     @classmethod

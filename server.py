@@ -264,7 +264,6 @@ class RasaNLU(object):
                 returnValue(json_to_string({ "error":{ "statusCode": 404, "message": "{}".format(str(e)) }}))
             except Exception as e:
                 request.setResponseCode(500)
-                logger.exception("error in parse function :" + e)
                 returnValue(json_to_string({ "error":{ "statusCode": 500, "message": "{}".format(str(e)) }}))
 
     @app.route("/version", methods=['GET', 'OPTIONS'])

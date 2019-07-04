@@ -7,7 +7,7 @@
     port: 5555
     port_out: 5556
     show_server_config: True
-    timeout: 10000
+    timeout: 500
   #- name: "active_bert_nerual_classifier"
   - name: "intent_estimator_classifier_tensorflow_embedding_bert"
   - name: "nlp_spacy"

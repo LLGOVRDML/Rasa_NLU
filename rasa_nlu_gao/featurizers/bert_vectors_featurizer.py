@@ -102,7 +102,7 @@ class BertVectorsFeaturizer(Featurizer):
 
 
         except Exception as e:
-            bert_embedding = np.zeros((1, 768), np.float32)
+            bert_embedding = np.squeeze(np.random.normal(loc=0.0, scale=1.0, size=(1, 768)))
             logger.info("error in creating train example")
             logger.info(e)
 

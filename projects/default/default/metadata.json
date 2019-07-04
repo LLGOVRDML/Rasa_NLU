@@ -10,7 +10,7 @@
         {
             "port": 5555,
             "output_fmt": "ndarray",
-            "timeout": 10000,
+            "timeout": 500,
             "ip": "127.0.0.1",
             "port_out": 5556,
             "show_server_config": true,
