@@ -1,90 +1,90 @@
 {
-    "trained_at": "20190704-025937",
-    "language": "zh",
     "rasa_nlu_version": "0.13.4",
-    "training_data": "training_data.json",
     "pipeline": [
         {
-            "name": "tokenizer_jieba",
             "dictionary_path": "tokenizer_jieba",
+            "name": "tokenizer_jieba",
             "class": "rasa_nlu_gao.tokenizers.jieba_tokenizer.JiebaTokenizer"
         },
         {
-            "batch_size": 128,
+            "ip": "127.0.0.1",
+            "identity": null,
+            "timeout": 500,
+            "port_out": 5556,
+            "class": "rasa_nlu_gao.featurizers.bert_vectors_featurizer.BertVectorsFeaturizer",
             "check_version": true,
-            "show_server_config": true,
             "port": 5555,
             "output_fmt": "ndarray",
-            "class": "rasa_nlu_gao.featurizers.bert_vectors_featurizer.BertVectorsFeaturizer",
+            "batch_size": 128,
             "name": "bert_vectors_featurizer",
-            "identity": null,
-            "port_out": 5556,
-            "timeout": 500,
-            "ip": "127.0.0.1"
+            "show_server_config": true
         },
         {
-            "classifier_file": "1562209176",
-            "batch_size": 256,
             "intent_tokenization_flag": false,
-            "config_proto": {
-                "allow_growth": true,
-                "per_process_gpu_memory_fraction": 0.25,
-                "inter_op_parallelism_threads": 0,
-                "intra_op_parallelism_threads": 0,
-                "device_count": 12,
-                "allocator_type": "BFC"
-            },
             "epochs": 500,
-            "intent_split_symbol": "_",
+            "config_proto": {
+                "allocator_type": "BFC",
+                "per_process_gpu_memory_fraction": 0.25,
+                "device_count": 8,
+                "intra_op_parallelism_threads": 0,
+                "allow_growth": true,
+                "inter_op_parallelism_threads": 0
+            },
+            "classifier_file": "1562232622",
+            "class": "rasa_nlu_gao.classifiers.embedding_bert_intent_estimator_classifier.EmbeddingBertIntentEstimatorClassifier",
+            "batch_size": 256,
             "name": "intent_estimator_classifier_tensorflow_embedding_bert",
-            "class": "rasa_nlu_gao.classifiers.embedding_bert_intent_estimator_classifier.EmbeddingBertIntentEstimatorClassifier"
+            "intent_split_symbol": "_"
         },
         {
-            "case_sensitive": false,
-            "model": "zh",
             "name": "nlp_spacy",
-            "class": "rasa_nlu_gao.utils.spacy_utils.SpacyNLP"
+            "model": "zh",
+            "class": "rasa_nlu_gao.utils.spacy_utils.SpacyNLP",
+            "case_sensitive": false
         },
         {
-            "regex_file": "regex_featurizer.json",
             "name": "intent_entity_featurizer_regex",
+            "regex_file": "regex_featurizer.json",
             "class": "rasa_nlu_gao.featurizers.regex_featurizer.RegexFeaturizer"
         },
         {
-            "optimizer": "adam",
-            "steps_check": 100,
-            "tag_schema": "iobes",
-            "class": "rasa_nlu_gao.extractors.bilstm_crf_entity_extractor.BilstmCRFEntityExtractor",
-            "num_tags": 13,
-            "char_dim": 100,
+            "clip": 5,
+            "seg_dim": 20,
+            "config_proto": {
+                "allocator_type": "BFC",
+                "per_process_gpu_memory_fraction": 0.25,
+                "device_count": 8,
+                "intra_op_parallelism_threads": 0,
+                "allow_growth": true,
+                "inter_op_parallelism_threads": 0
+            },
             "num_segs": 4,
             "dropout_keep": 0.5,
-            "zeros": true,
-            "seg_dim": 20,
-            "batch_size": 20,
-            "batches_per_epoch": 10,
-            "is_training": true,
-            "classifier_file": "ner_bilstm_crf.ckpt",
-            "lower": false,
-            "clip": 5,
-            "lstm_dim": 100,
             "name": "ner_bilstm_crf",
-            "config_proto": {
-                "allow_growth": true,
-                "per_process_gpu_memory_fraction": 0.25,
-                "inter_op_parallelism_threads": 0,
-                "intra_op_parallelism_threads": 0,
-                "device_count": 12,
-                "allocator_type": "BFC"
-            },
-            "lr": 0.001,
+            "lower": false,
+            "is_training": true,
+            "char_dim": 100,
+            "model_type": "bilstm",
+            "class": "rasa_nlu_gao.extractors.bilstm_crf_entity_extractor.BilstmCRFEntityExtractor",
+            "steps_check": 100,
             "num_chars": 533,
-            "model_type": "idcnn"
+            "lstm_dim": 100,
+            "classifier_file": "ner_bilstm_crf.ckpt",
+            "optimizer": "adam",
+            "lr": 0.001,
+            "batch_size": 20,
+            "num_tags": 13,
+            "batches_per_epoch": 10,
+            "tag_schema": "iobes",
+            "zeros": true
         },
         {
-            "synonyms_file": "entity_synonyms.json",
             "name": "ner_synonyms",
+            "synonyms_file": "entity_synonyms.json",
             "class": "rasa_nlu_gao.extractors.entity_synonyms.EntitySynonymMapper"
         }
-    ]
+    ],
+    "language": "zh",
+    "trained_at": "20190704-173022",
+    "training_data": "training_data.json"
 }
