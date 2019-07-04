@@ -310,8 +310,8 @@ class DataRouter(object):
             "max_training_processes": self._training_processes,
             "current_training_processes": self._current_training_processes,
             "available_projects": {
-                name: project.as_dict()
-                for name, project in self.project_store.items()
+                name: proj[name].as_dict()
+                for name, proj in self.project_store.items()
             }
         }
 
