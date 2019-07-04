@@ -1,383 +1,224 @@
 {
   "rasa_nlu_data": {
     "regex_features": [],
-    "entity_synonyms": [
-      {
-        "synonyms": [
-          "青岛市"
-        ],
-        "value": "青岛"
-      },
-      {
-        "synonyms": [
-          "杭州市"
-        ],
-        "value": "杭州"
-      },
-      {
-        "synonyms": [
-          "西安市"
-        ],
-        "value": "西安"
-      },
-      {
-        "synonyms": [
-          "北平",
-          "帝都",
-          "bei'jing",
-          "北京市",
-          "京",
-          "中国首都",
-          "beijing",
-          "Beijing",
-          "首都"
-        ],
-        "value": "北京"
-      },
-      {
-        "synonyms": [
-          "养老",
-          "养老保"
-        ],
-        "value": "养老保险"
-      },
-      {
-        "synonyms": [
-          "南京市"
-        ],
-        "value": "南京"
-      },
-      {
-        "synonyms": [
-          "长沙市"
-        ],
-        "value": "长沙"
-      },
-      {
-        "synonyms": [
-          "无锡市"
-        ],
-        "value": "无锡"
-      },
-      {
-        "synonyms": [
-          "东莞市"
-        ],
-        "value": "东莞"
-      },
-      {
-        "synonyms": [
-          "广州市"
-        ],
-        "value": "广州"
-      },
-      {
-        "synonyms": [
-          "成都市"
-        ],
-        "value": "成都"
-      },
-      {
-        "synonyms": [
-          "租房"
-        ],
-        "value": "租房提取"
-      },
-      {
-        "synonyms": [
-          "大连市"
-        ],
-        "value": "大连"
-      },
-      {
-        "synonyms": [
-          "重庆市"
-        ],
-        "value": "重庆"
-      },
-      {
-        "synonyms": [
-          "厦门市"
-        ],
-        "value": "厦门"
-      },
-      {
-        "synonyms": [
-          "海口市"
-        ],
-        "value": "海口"
-      },
-      {
-        "synonyms": [
-          "金华市"
-        ],
-        "value": "金华"
-      },
-      {
-        "synonyms": [
-          "医疗",
-          "医保"
-        ],
-        "value": "医疗保险"
-      },
-      {
-        "synonyms": [
-          "武汉市"
-        ],
-        "value": "武汉"
-      },
-      {
-        "synonyms": [
-          "深圳市"
-        ],
-        "value": "深圳"
-      },
-      {
-        "synonyms": [
-          "买房"
-        ],
-        "value": "买房提取"
-      },
-      {
-        "synonyms": [
-          "上海市",
-          "沪",
-          "shanghai",
-          "魔都"
-        ],
-        "value": "上海"
-      },
-      {
-        "synonyms": [
-          "离职"
-        ],
-        "value": "离职提取"
-      },
-      {
-        "synonyms": [
-          "贵阳市"
-        ],
-        "value": "贵阳"
-      }
-    ],
     "lookup_tables": [
       {
-        "name": "城市名称",
         "elements": [
-          "北平",
-          "京",
-          "帝都",
-          "北京",
-          "中国首都",
-          "beijing",
           "Beijing",
-          "bei'jing",
           "首都",
-          "北京市"
+          "京",
+          "北京",
+          "北平",
+          "中国首都",
+          "北京市",
+          "帝都",
+          "bei'jing",
+          "beijing"
         ],
+        "name": "城市名称",
         "resolution": "北京"
       },
       {
-        "name": "城市名称",
         "elements": [
           "上海市",
-          "沪",
           "上海",
-          "shanghai",
-          "魔都"
+          "沪",
+          "魔都",
+          "shanghai"
         ],
+        "name": "城市名称",
         "resolution": "上海"
       },
       {
-        "name": "城市名称",
         "elements": [
           "无锡市",
           "无锡"
         ],
+        "name": "城市名称",
         "resolution": "无锡"
       },
       {
-        "name": "城市名称",
         "elements": [
           "广州",
           "广州市"
         ],
+        "name": "城市名称",
         "resolution": "广州"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "成都",
-          "成都市"
+          "成都市",
+          "成都"
         ],
+        "name": "城市名称",
         "resolution": "成都"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "深圳",
-          "深圳市"
+          "深圳市",
+          "深圳"
         ],
+        "name": "城市名称",
         "resolution": "深圳"
       },
       {
-        "name": "城市名称",
         "elements": [
           "大连",
           "大连市"
         ],
+        "name": "城市名称",
         "resolution": "大连"
       },
       {
-        "name": "城市名称",
         "elements": [
           "南京",
           "南京市"
         ],
+        "name": "城市名称",
         "resolution": "南京"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "厦门市",
-          "厦门"
+          "厦门",
+          "厦门市"
         ],
+        "name": "城市名称",
         "resolution": "厦门"
       },
       {
-        "name": "城市名称",
         "elements": [
           "杭州",
           "杭州市"
         ],
+        "name": "城市名称",
         "resolution": "杭州"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "长沙市",
-          "长沙"
+          "长沙",
+          "长沙市"
         ],
+        "name": "城市名称",
         "resolution": "长沙"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "东莞市",
-          "东莞"
+          "东莞",
+          "东莞市"
         ],
+        "name": "城市名称",
         "resolution": "东莞"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "武汉",
-          "武汉市"
+          "武汉市",
+          "武汉"
         ],
+        "name": "城市名称",
         "resolution": "武汉"
       },
       {
-        "name": "城市名称",
         "elements": [
           "青岛",
           "青岛市"
         ],
+        "name": "城市名称",
         "resolution": "青岛"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "西安市",
-          "西安"
+          "西安",
+          "西安市"
         ],
+        "name": "城市名称",
         "resolution": "西安"
       },
       {
-        "name": "城市名称",
         "elements": [
           "重庆市",
           "重庆"
         ],
+        "name": "城市名称",
         "resolution": "重庆"
       },
       {
-        "name": "城市名称",
         "elements": [
           "贵阳",
           "贵阳市"
         ],
+        "name": "城市名称",
         "resolution": "贵阳"
       },
       {
-        "name": "城市名称",
         "elements": [
           "海口市",
           "海口"
         ],
+        "name": "城市名称",
         "resolution": "海口"
       },
       {
-        "name": "城市名称",
         "elements": [
-          "金华市",
-          "金华"
+          "金华",
+          "金华市"
         ],
+        "name": "城市名称",
         "resolution": "金华"
       },
       {
-        "name": "提取类型",
         "elements": [
           "租房提取",
           "租房"
         ],
+        "name": "提取类型",
         "resolution": "租房提取"
       },
       {
-        "name": "提取类型",
         "elements": [
           "买房",
           "买房提取"
         ],
+        "name": "提取类型",
         "resolution": "买房提取"
       },
       {
-        "name": "提取类型",
         "elements": [
           "离职",
           "离职提取"
         ],
+        "name": "提取类型",
         "resolution": "离职提取"
       },
       {
-        "name": "转移类型",
         "elements": [
           "转入"
         ],
+        "name": "转移类型",
         "resolution": "转入"
       },
       {
-        "name": "转移类型",
         "elements": [
           "转出"
         ],
+        "name": "转移类型",
         "resolution": "转出"
       },
       {
-        "name": "险种类型",
         "elements": [
+          "医疗保险",
           "医保",
-          "医疗",
-          "医疗保险"
+          "医疗"
         ],
+        "name": "险种类型",
         "resolution": "医疗保险"
       },
       {
-        "name": "险种类型",
         "elements": [
           "养老",
-          "养老保",
-          "养老保险"
+          "养老保险",
+          "养老保"
         ],
+        "name": "险种类型",
         "resolution": "养老保险"
       }
     ],
@@ -6956,6 +6797,165 @@
         "text": "呼和浩特呢",
         "intent": "引用_上一个会话意图_城市名称",
         "entities": []
+      }
+    ],
+    "entity_synonyms": [
+      {
+        "synonyms": [
+          "医保",
+          "医疗"
+        ],
+        "value": "医疗保险"
+      },
+      {
+        "synonyms": [
+          "上海市",
+          "魔都",
+          "shanghai",
+          "沪"
+        ],
+        "value": "上海"
+      },
+      {
+        "synonyms": [
+          "海口市"
+        ],
+        "value": "海口"
+      },
+      {
+        "synonyms": [
+          "深圳市"
+        ],
+        "value": "深圳"
+      },
+      {
+        "synonyms": [
+          "金华市"
+        ],
+        "value": "金华"
+      },
+      {
+        "synonyms": [
+          "长沙市"
+        ],
+        "value": "长沙"
+      },
+      {
+        "synonyms": [
+          "厦门市"
+        ],
+        "value": "厦门"
+      },
+      {
+        "synonyms": [
+          "租房"
+        ],
+        "value": "租房提取"
+      },
+      {
+        "synonyms": [
+          "离职"
+        ],
+        "value": "离职提取"
+      },
+      {
+        "synonyms": [
+          "大连市"
+        ],
+        "value": "大连"
+      },
+      {
+        "synonyms": [
+          "广州市"
+        ],
+        "value": "广州"
+      },
+      {
+        "synonyms": [
+          "买房"
+        ],
+        "value": "买房提取"
+      },
+      {
+        "synonyms": [
+          "武汉市"
+        ],
+        "value": "武汉"
+      },
+      {
+        "synonyms": [
+          "西安市"
+        ],
+        "value": "西安"
+      },
+      {
+        "synonyms": [
+          "青岛市"
+        ],
+        "value": "青岛"
+      },
+      {
+        "synonyms": [
+          "成都市"
+        ],
+        "value": "成都"
+      },
+      {
+        "synonyms": [
+          "东莞市"
+        ],
+        "value": "东莞"
+      },
+      {
+        "synonyms": [
+          "养老",
+          "养老保"
+        ],
+        "value": "养老保险"
+      },
+      {
+        "synonyms": [
+          "北平",
+          "北京市",
+          "beijing",
+          "帝都",
+          "Beijing",
+          "bei'jing",
+          "京",
+          "中国首都",
+          "首都"
+        ],
+        "value": "北京"
+      },
+      {
+        "synonyms": [
+          "重庆市"
+        ],
+        "value": "重庆"
+      },
+      {
+        "synonyms": [
+          "南京市"
+        ],
+        "value": "南京"
+      },
+      {
+        "synonyms": [
+          "贵阳市"
+        ],
+        "value": "贵阳"
+      },
+      {
+        "synonyms": [
+          "杭州市"
+        ],
+        "value": "杭州"
+      },
+      {
+        "synonyms": [
+          "无锡市"
+        ],
+        "value": "无锡"
       }
     ]
   }

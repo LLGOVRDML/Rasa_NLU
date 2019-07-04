@@ -108,7 +108,6 @@ class JiebaTokenizer(Tokenizer, Component):
         tokenized = jieba.tokenize(text)
 
         tokens = [Token(word, start) for (word, start, end) in tokenized]
-        print(tokens)
         return tokens
 
     @classmethod
