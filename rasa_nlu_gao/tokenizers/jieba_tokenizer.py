@@ -8,7 +8,7 @@ import logging
 import os
 import shutil
 import datetime
-
+import jieba
 
 from rasa_nlu_gao.components import Component
 from rasa_nlu_gao.config import RasaNLUModelConfig
@@ -57,7 +57,6 @@ class JiebaTokenizer(Tokenizer, Component):
         be found in the documentation of jieba.
         https://github.com/fxsjy/jieba#load-dictionary
         """
-        import jieba
 
 
         jieba_userdicts = glob.glob("{}/*".format(path))
@@ -70,7 +69,8 @@ class JiebaTokenizer(Tokenizer, Component):
                     if not word:
                         break
                     word = word.replace("\n", "")
-                    jieba.add_word(word,freq=2000)
+                    jieba.add_word(word,freq=2000000)
+        jieba.initialize()
 
     def train(self, training_data, config, **kwargs):
         # type: (TrainingData, RasaNLUModelConfig, **Any) -> None
@@ -105,6 +105,7 @@ class JiebaTokenizer(Tokenizer, Component):
         if self.dictionary_path is not None:
             self.load_custom_dictionary(self.dictionary_path)
 
+        jieba.initialize()
         tokenized = jieba.tokenize(text)
 
         tokens = [Token(word, start) for (word, start, end) in tokenized]

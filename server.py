@@ -252,7 +252,7 @@ class RasaNLU(object):
             try:
                 request.setResponseCode(200)
 
-                response = yield (self.data_router.parse(data) if self._testing
+                response = yield (self.data_router.parse(data) if True
                                   else threads.deferToThread(
                                   self.data_router.parse, data))
                 end = time.time()
