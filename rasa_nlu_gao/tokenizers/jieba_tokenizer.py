@@ -80,7 +80,7 @@ class JiebaTokenizer(Tokenizer, Component):
     def train(self, training_data, config, **kwargs):
         # type: (TrainingData, RasaNLUModelConfig, **Any) -> None
 
-        if self.dictionary_path == None:
+        if self.dictionary_path is None:
             lookup_tables = training_data.lookup_tables
             lookup_list = []
             for item in lookup_tables:
@@ -159,10 +159,10 @@ class JiebaTokenizer(Tokenizer, Component):
             self.copy_files_dir_to_dir(self.dictionary_path,
                                        target_dictionary_path)
 
-            for f in os.listdir(self.dictionary_path):
-                filepath = os.path.join(self.dictionary_path, f)
-                if os.path.isfile(filepath):
-                    os.remove(filepath)
+            #for f in os.listdir(self.dictionary_path):
+            #    filepath = os.path.join(self.dictionary_path, f)
+            #    if os.path.isfile(filepath):
+            #        os.remove(filepath)
 
 
             # set dictionary_path of model metadata to relative path

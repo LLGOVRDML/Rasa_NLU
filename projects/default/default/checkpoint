@@ -1,2 +1,2 @@
-model_checkpoint_path: "C:\\Users\\95890\\Documents\\GitHub\\Rasa_NLU\\projects\\default\\default\\ner_bilstm_crf.ckpt"
-all_model_checkpoint_paths: "C:\\Users\\95890\\Documents\\GitHub\\Rasa_NLU\\projects\\default\\default\\ner_bilstm_crf.ckpt"
+model_checkpoint_path: "C:\\Users\\weizhen\\Documents\\GitHub\\Rasa_NLU\\projects\\default\\default\\ner_bilstm_crf.ckpt"
+all_model_checkpoint_paths: "C:\\Users\\weizhen\\Documents\\GitHub\\Rasa_NLU\\projects\\default\\default\\ner_bilstm_crf.ckpt"

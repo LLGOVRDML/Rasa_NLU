@@ -6587,417 +6587,417 @@
         "intent": "引用_上一个会话意图_城市名称"
       }
     ],
-    "regex_features": [],
     "lookup_tables": [
       {
-        "name": "城市名称",
         "resolution": "北京",
         "elements": [
-          "Beijing",
           "中国首都",
-          "北平",
-          "北京",
+          "bei'jing",
           "京",
-          "帝都",
           "北京市",
-          "首都",
+          "北京",
           "beijing",
-          "bei'jing"
-        ]
+          "首都",
+          "北平",
+          "帝都",
+          "Beijing"
+        ],
+        "name": "城市名称"
       },
       {
-        "name": "城市名称",
         "resolution": "上海",
         "elements": [
-          "shanghai",
-          "沪",
-          "上海市",
-          "魔都",
-          "上海"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "无锡",
-        "elements": [
-          "无锡市",
-          "无锡"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "广州",
-        "elements": [
-          "广州",
-          "广州市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "成都",
-        "elements": [
-          "成都",
-          "成都市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "深圳",
-        "elements": [
-          "深圳市",
-          "深圳"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "大连",
-        "elements": [
-          "大连",
-          "大连市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "南京",
-        "elements": [
-          "南京",
-          "南京市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "厦门",
-        "elements": [
-          "厦门市",
-          "厦门"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "杭州",
-        "elements": [
-          "杭州市",
-          "杭州"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "长沙",
-        "elements": [
-          "长沙市",
-          "长沙"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "东莞",
-        "elements": [
-          "东莞",
-          "东莞市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "武汉",
-        "elements": [
-          "武汉市",
-          "武汉"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "青岛",
-        "elements": [
-          "青岛市",
-          "青岛"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "西安",
-        "elements": [
-          "西安",
-          "西安市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "重庆",
-        "elements": [
-          "重庆",
-          "重庆市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "贵阳",
-        "elements": [
-          "贵阳",
-          "贵阳市"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "海口",
-        "elements": [
-          "海口市",
-          "海口"
-        ]
-      },
-      {
-        "name": "城市名称",
-        "resolution": "金华",
-        "elements": [
-          "金华市",
-          "金华"
-        ]
-      },
-      {
-        "name": "提取类型",
-        "resolution": "租房提取",
-        "elements": [
-          "租房子",
-          "租房提取",
-          "租房",
-          "租的"
-        ]
-      },
-      {
-        "name": "提取类型",
-        "resolution": "买房提取",
-        "elements": [
-          "买的",
-          "买房",
-          "买一套房子",
-          "买房提取",
-          "买房子"
-        ]
-      },
-      {
-        "name": "提取类型",
-        "resolution": "离职提取",
-        "elements": [
-          "离开公司",
-          "离职提取",
-          "离职",
-          "辞职"
-        ]
-      },
-      {
-        "name": "转移类型",
-        "resolution": "转入",
-        "elements": [
-          "转入",
-          "转来",
-          "转过来"
-        ]
-      },
-      {
-        "name": "转移类型",
-        "resolution": "转出",
-        "elements": [
-          "转出",
-          "转走"
-        ]
-      },
-      {
-        "name": "险种类型",
-        "resolution": "医疗保险",
-        "elements": [
-          "医保",
-          "医疗",
-          "医疗保险"
-        ]
-      },
-      {
-        "name": "险种类型",
-        "resolution": "养老保险",
-        "elements": [
-          "养老保险",
-          "养老",
-          "养老险",
-          "养老金"
-        ]
-      }
-    ],
-    "entity_synonyms": [
-      {
-        "synonyms": [
-          "南京市"
-        ],
-        "value": "南京"
-      },
-      {
-        "synonyms": [
-          "离开公司",
-          "辞职",
-          "离职"
-        ],
-        "value": "离职提取"
-      },
-      {
-        "synonyms": [
-          "医保",
-          "医疗"
-        ],
-        "value": "医疗保险"
-      },
-      {
-        "synonyms": [
-          "转走"
-        ],
-        "value": "转出"
-      },
-      {
-        "synonyms": [
-          "长沙市"
-        ],
-        "value": "长沙"
-      },
-      {
-        "synonyms": [
-          "海口市"
-        ],
-        "value": "海口"
-      },
-      {
-        "synonyms": [
-          "重庆市"
-        ],
-        "value": "重庆"
-      },
-      {
-        "synonyms": [
-          "青岛市"
-        ],
-        "value": "青岛"
-      },
-      {
-        "synonyms": [
-          "贵阳市"
-        ],
-        "value": "贵阳"
-      },
-      {
-        "synonyms": [
-          "深圳市"
-        ],
-        "value": "深圳"
-      },
-      {
-        "synonyms": [
-          "广州市"
-        ],
-        "value": "广州"
-      },
-      {
-        "synonyms": [
-          "大连市"
-        ],
-        "value": "大连"
-      },
-      {
-        "synonyms": [
+          "上海",
           "魔都",
           "上海市",
           "沪",
           "shanghai"
         ],
-        "value": "上海"
+        "name": "城市名称"
       },
       {
-        "synonyms": [
-          "买一套房子",
-          "买房子",
-          "买房",
-          "买的"
+        "resolution": "无锡",
+        "elements": [
+          "无锡市",
+          "无锡"
         ],
-        "value": "买房提取"
+        "name": "城市名称"
       },
       {
-        "synonyms": [
-          "Beijing",
-          "京",
-          "首都",
-          "北京市",
-          "中国首都",
-          "北平",
-          "帝都",
-          "beijing",
-          "bei'jing"
+        "resolution": "广州",
+        "elements": [
+          "广州市",
+          "广州"
         ],
-        "value": "北京"
+        "name": "城市名称"
       },
       {
-        "synonyms": [
-          "转来",
-          "转过来"
-        ],
-        "value": "转入"
-      },
-      {
-        "synonyms": [
-          "杭州市"
-        ],
-        "value": "杭州"
-      },
-      {
-        "synonyms": [
-          "租房子",
-          "租房",
-          "租的"
-        ],
-        "value": "租房提取"
-      },
-      {
-        "synonyms": [
-          "武汉市"
-        ],
-        "value": "武汉"
-      },
-      {
-        "synonyms": [
-          "厦门市"
-        ],
-        "value": "厦门"
-      },
-      {
-        "synonyms": [
-          "西安市"
-        ],
-        "value": "西安"
-      },
-      {
-        "synonyms": [
-          "无锡市"
-        ],
-        "value": "无锡"
-      },
-      {
-        "synonyms": [
-          "东莞市"
-        ],
-        "value": "东莞"
-      },
-      {
-        "synonyms": [
+        "resolution": "成都",
+        "elements": [
+          "成都",
           "成都市"
         ],
-        "value": "成都"
+        "name": "城市名称"
       },
       {
-        "synonyms": [
+        "resolution": "深圳",
+        "elements": [
+          "深圳市",
+          "深圳"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "大连",
+        "elements": [
+          "大连市",
+          "大连"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "南京",
+        "elements": [
+          "南京市",
+          "南京"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "厦门",
+        "elements": [
+          "厦门市",
+          "厦门"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "杭州",
+        "elements": [
+          "杭州市",
+          "杭州"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "长沙",
+        "elements": [
+          "长沙",
+          "长沙市"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "东莞",
+        "elements": [
+          "东莞",
+          "东莞市"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "武汉",
+        "elements": [
+          "武汉",
+          "武汉市"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "青岛",
+        "elements": [
+          "青岛",
+          "青岛市"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "西安",
+        "elements": [
+          "西安市",
+          "西安"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "重庆",
+        "elements": [
+          "重庆市",
+          "重庆"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "贵阳",
+        "elements": [
+          "贵阳市",
+          "贵阳"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "海口",
+        "elements": [
+          "海口",
+          "海口市"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "金华",
+        "elements": [
+          "金华",
+          "金华市"
+        ],
+        "name": "城市名称"
+      },
+      {
+        "resolution": "租房提取",
+        "elements": [
+          "租房子",
+          "租房提取",
+          "租的",
+          "租房"
+        ],
+        "name": "提取类型"
+      },
+      {
+        "resolution": "买房提取",
+        "elements": [
+          "买一套房子",
+          "买房子",
+          "买的",
+          "买房提取",
+          "买房"
+        ],
+        "name": "提取类型"
+      },
+      {
+        "resolution": "离职提取",
+        "elements": [
+          "离职提取",
+          "辞职",
+          "离开公司",
+          "离职"
+        ],
+        "name": "提取类型"
+      },
+      {
+        "resolution": "转入",
+        "elements": [
+          "转过来",
+          "转来",
+          "转入"
+        ],
+        "name": "转移类型"
+      },
+      {
+        "resolution": "转出",
+        "elements": [
+          "转出",
+          "转走"
+        ],
+        "name": "转移类型"
+      },
+      {
+        "resolution": "医疗保险",
+        "elements": [
+          "医疗保险",
+          "医疗",
+          "医保"
+        ],
+        "name": "险种类型"
+      },
+      {
+        "resolution": "养老保险",
+        "elements": [
+          "养老保险",
           "养老",
           "养老金",
           "养老险"
         ],
-        "value": "养老保险"
+        "name": "险种类型"
+      }
+    ],
+    "regex_features": [],
+    "entity_synonyms": [
+      {
+        "value": "无锡",
+        "synonyms": [
+          "无锡市"
+        ]
       },
       {
+        "value": "武汉",
+        "synonyms": [
+          "武汉市"
+        ]
+      },
+      {
+        "value": "北京",
+        "synonyms": [
+          "京",
+          "北京市",
+          "beijing",
+          "帝都",
+          "北平",
+          "bei'jing",
+          "Beijing",
+          "中国首都",
+          "首都"
+        ]
+      },
+      {
+        "value": "转入",
+        "synonyms": [
+          "转过来",
+          "转来"
+        ]
+      },
+      {
+        "value": "南京",
+        "synonyms": [
+          "南京市"
+        ]
+      },
+      {
+        "value": "海口",
+        "synonyms": [
+          "海口市"
+        ]
+      },
+      {
+        "value": "杭州",
+        "synonyms": [
+          "杭州市"
+        ]
+      },
+      {
+        "value": "深圳",
+        "synonyms": [
+          "深圳市"
+        ]
+      },
+      {
+        "value": "广州",
+        "synonyms": [
+          "广州市"
+        ]
+      },
+      {
+        "value": "养老保险",
+        "synonyms": [
+          "养老金",
+          "养老险",
+          "养老"
+        ]
+      },
+      {
+        "value": "贵阳",
+        "synonyms": [
+          "贵阳市"
+        ]
+      },
+      {
+        "value": "重庆",
+        "synonyms": [
+          "重庆市"
+        ]
+      },
+      {
+        "value": "大连",
+        "synonyms": [
+          "大连市"
+        ]
+      },
+      {
+        "value": "医疗保险",
+        "synonyms": [
+          "医疗",
+          "医保"
+        ]
+      },
+      {
+        "value": "买房提取",
+        "synonyms": [
+          "买一套房子",
+          "买的",
+          "买房子",
+          "买房"
+        ]
+      },
+      {
+        "value": "青岛",
+        "synonyms": [
+          "青岛市"
+        ]
+      },
+      {
+        "value": "上海",
+        "synonyms": [
+          "shanghai",
+          "魔都",
+          "上海市",
+          "沪"
+        ]
+      },
+      {
+        "value": "西安",
+        "synonyms": [
+          "西安市"
+        ]
+      },
+      {
+        "value": "成都",
+        "synonyms": [
+          "成都市"
+        ]
+      },
+      {
+        "value": "转出",
+        "synonyms": [
+          "转走"
+        ]
+      },
+      {
+        "value": "东莞",
+        "synonyms": [
+          "东莞市"
+        ]
+      },
+      {
+        "value": "厦门",
+        "synonyms": [
+          "厦门市"
+        ]
+      },
+      {
+        "value": "离职提取",
+        "synonyms": [
+          "离职",
+          "离开公司",
+          "辞职"
+        ]
+      },
+      {
+        "value": "长沙",
+        "synonyms": [
+          "长沙市"
+        ]
+      },
+      {
+        "value": "金华",
         "synonyms": [
           "金华市"
-        ],
-        "value": "金华"
+        ]
+      },
+      {
+        "value": "租房提取",
+        "synonyms": [
+          "租房子",
+          "租的",
+          "租房"
+        ]
       }
     ]
   }

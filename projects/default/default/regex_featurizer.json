@@ -1,132 +1,132 @@
 [
     {
-        "pattern": "(Beijing|中国首都|北平|北京|京|帝都|北京市|首都|beijing|bei'jing)",
-        "name": "城市名称",
-        "resolution": "北京"
+        "resolution": "北京",
+        "pattern": "(中国首都|bei'jing|京|北京市|北京|beijing|首都|北平|帝都|Beijing)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(shanghai|沪|上海市|魔都|上海)",
-        "name": "城市名称",
-        "resolution": "上海"
+        "resolution": "上海",
+        "pattern": "(上海|魔都|上海市|沪|shanghai)",
+        "name": "城市名称"
     },
     {
+        "resolution": "无锡",
         "pattern": "(无锡市|无锡)",
-        "name": "城市名称",
-        "resolution": "无锡"
+        "name": "城市名称"
     },
     {
-        "pattern": "(广州|广州市)",
-        "name": "城市名称",
-        "resolution": "广州"
+        "resolution": "广州",
+        "pattern": "(广州市|广州)",
+        "name": "城市名称"
     },
     {
+        "resolution": "成都",
         "pattern": "(成都|成都市)",
-        "name": "城市名称",
-        "resolution": "成都"
+        "name": "城市名称"
     },
     {
+        "resolution": "深圳",
         "pattern": "(深圳市|深圳)",
-        "name": "城市名称",
-        "resolution": "深圳"
+        "name": "城市名称"
     },
     {
-        "pattern": "(大连|大连市)",
-        "name": "城市名称",
-        "resolution": "大连"
+        "resolution": "大连",
+        "pattern": "(大连市|大连)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(南京|南京市)",
-        "name": "城市名称",
-        "resolution": "南京"
+        "resolution": "南京",
+        "pattern": "(南京市|南京)",
+        "name": "城市名称"
     },
     {
+        "resolution": "厦门",
         "pattern": "(厦门市|厦门)",
-        "name": "城市名称",
-        "resolution": "厦门"
+        "name": "城市名称"
     },
     {
+        "resolution": "杭州",
         "pattern": "(杭州市|杭州)",
-        "name": "城市名称",
-        "resolution": "杭州"
+        "name": "城市名称"
     },
     {
-        "pattern": "(长沙市|长沙)",
-        "name": "城市名称",
-        "resolution": "长沙"
+        "resolution": "长沙",
+        "pattern": "(长沙|长沙市)",
+        "name": "城市名称"
     },
     {
+        "resolution": "东莞",
         "pattern": "(东莞|东莞市)",
-        "name": "城市名称",
-        "resolution": "东莞"
+        "name": "城市名称"
     },
     {
-        "pattern": "(武汉市|武汉)",
-        "name": "城市名称",
-        "resolution": "武汉"
+        "resolution": "武汉",
+        "pattern": "(武汉|武汉市)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(青岛市|青岛)",
-        "name": "城市名称",
-        "resolution": "青岛"
+        "resolution": "青岛",
+        "pattern": "(青岛|青岛市)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(西安|西安市)",
-        "name": "城市名称",
-        "resolution": "西安"
+        "resolution": "西安",
+        "pattern": "(西安市|西安)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(重庆|重庆市)",
-        "name": "城市名称",
-        "resolution": "重庆"
+        "resolution": "重庆",
+        "pattern": "(重庆市|重庆)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(贵阳|贵阳市)",
-        "name": "城市名称",
-        "resolution": "贵阳"
+        "resolution": "贵阳",
+        "pattern": "(贵阳市|贵阳)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(海口市|海口)",
-        "name": "城市名称",
-        "resolution": "海口"
+        "resolution": "海口",
+        "pattern": "(海口|海口市)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(金华市|金华)",
-        "name": "城市名称",
-        "resolution": "金华"
+        "resolution": "金华",
+        "pattern": "(金华|金华市)",
+        "name": "城市名称"
     },
     {
-        "pattern": "(租房子|租房提取|租房|租的)",
-        "name": "提取类型",
-        "resolution": "租房提取"
+        "resolution": "租房提取",
+        "pattern": "(租房子|租房提取|租的|租房)",
+        "name": "提取类型"
     },
     {
-        "pattern": "(买的|买房|买一套房子|买房提取|买房子)",
-        "name": "提取类型",
-        "resolution": "买房提取"
+        "resolution": "买房提取",
+        "pattern": "(买一套房子|买房子|买的|买房提取|买房)",
+        "name": "提取类型"
     },
     {
-        "pattern": "(离开公司|离职提取|离职|辞职)",
-        "name": "提取类型",
-        "resolution": "离职提取"
+        "resolution": "离职提取",
+        "pattern": "(离职提取|辞职|离开公司|离职)",
+        "name": "提取类型"
     },
     {
-        "pattern": "(转入|转来|转过来)",
-        "name": "转移类型",
-        "resolution": "转入"
+        "resolution": "转入",
+        "pattern": "(转过来|转来|转入)",
+        "name": "转移类型"
     },
     {
+        "resolution": "转出",
         "pattern": "(转出|转走)",
-        "name": "转移类型",
-        "resolution": "转出"
+        "name": "转移类型"
     },
     {
-        "pattern": "(医保|医疗|医疗保险)",
-        "name": "险种类型",
-        "resolution": "医疗保险"
+        "resolution": "医疗保险",
+        "pattern": "(医疗保险|医疗|医保)",
+        "name": "险种类型"
     },
     {
-        "pattern": "(养老保险|养老|养老险|养老金)",
-        "name": "险种类型",
-        "resolution": "养老保险"
+        "resolution": "养老保险",
+        "pattern": "(养老保险|养老|养老金|养老险)",
+        "name": "险种类型"
     }
 ]
