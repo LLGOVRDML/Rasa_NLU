@@ -1,12 +1,12 @@
 [
     {
         "resolution": "北京",
-        "pattern": "(中国首都|bei'jing|京|北京市|北京|beijing|首都|北平|帝都|Beijing)",
+        "pattern": "(北平|京|首都|帝都|中国首都|bei'jing|beijing|Beijing|北京市|北京)",
         "name": "城市名称"
     },
     {
         "resolution": "上海",
-        "pattern": "(上海|魔都|上海市|沪|shanghai)",
+        "pattern": "(魔都|shanghai|上海|上海市|沪)",
         "name": "城市名称"
     },
     {
@@ -21,7 +21,7 @@
     },
     {
         "resolution": "成都",
-        "pattern": "(成都|成都市)",
+        "pattern": "(成都市|成都)",
         "name": "城市名称"
     },
     {
@@ -36,7 +36,7 @@
     },
     {
         "resolution": "南京",
-        "pattern": "(南京市|南京)",
+        "pattern": "(南京|南京市)",
         "name": "城市名称"
     },
     {
@@ -46,7 +46,7 @@
     },
     {
         "resolution": "杭州",
-        "pattern": "(杭州市|杭州)",
+        "pattern": "(杭州|杭州市)",
         "name": "城市名称"
     },
     {
@@ -61,12 +61,12 @@
     },
     {
         "resolution": "武汉",
-        "pattern": "(武汉|武汉市)",
+        "pattern": "(武汉市|武汉)",
         "name": "城市名称"
     },
     {
         "resolution": "青岛",
-        "pattern": "(青岛|青岛市)",
+        "pattern": "(青岛市|青岛)",
         "name": "城市名称"
     },
     {
@@ -86,27 +86,27 @@
     },
     {
         "resolution": "海口",
-        "pattern": "(海口|海口市)",
+        "pattern": "(海口市|海口)",
         "name": "城市名称"
     },
     {
         "resolution": "金华",
-        "pattern": "(金华|金华市)",
+        "pattern": "(金华市|金华)",
         "name": "城市名称"
     },
     {
         "resolution": "租房提取",
-        "pattern": "(租房子|租房提取|租的|租房)",
+        "pattern": "(租房|租房子|租房提取|租的)",
         "name": "提取类型"
     },
     {
         "resolution": "买房提取",
-        "pattern": "(买一套房子|买房子|买的|买房提取|买房)",
+        "pattern": "(买房提取|买房|买房子|买一套房子|买的)",
         "name": "提取类型"
     },
     {
         "resolution": "离职提取",
-        "pattern": "(离职提取|辞职|离开公司|离职)",
+        "pattern": "(离开公司|离职提取|离职|辞职)",
         "name": "提取类型"
     },
     {
@@ -121,12 +121,12 @@
     },
     {
         "resolution": "医疗保险",
-        "pattern": "(医疗保险|医疗|医保)",
+        "pattern": "(医疗|医保|医疗保险)",
         "name": "险种类型"
     },
     {
         "resolution": "养老保险",
-        "pattern": "(养老保险|养老|养老金|养老险)",
+        "pattern": "(养老险|养老金|养老|养老保险)",
         "name": "险种类型"
     }
 ]
