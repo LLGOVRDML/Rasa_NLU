@@ -2,8 +2,9 @@
 
   pipeline:
   - name: "tokenizer_jieba"
+    dictionary_path: "dictionary"
   - name: "bert_vectors_featurizer"
-    ip: '172.17.0.3'
+    ip: '127.0.0.1'
     port: 5555
     port_out: 5556
     show_server_config: True

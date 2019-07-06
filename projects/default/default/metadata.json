@@ -17,7 +17,7 @@
             "identity": null,
             "check_version": true,
             "class": "rasa_nlu_gao.featurizers.bert_vectors_featurizer.BertVectorsFeaturizer",
-            "ip": "172.17.0.3",
+            "ip": "127.0.0.1",
             "port_out": 5556,
             "name": "bert_vectors_featurizer",
             "output_fmt": "ndarray"

@@ -41,6 +41,11 @@ class JiebaTokenizer(Tokenizer, Component):
         # path to dictionary file or None
         self.dictionary_path = self.component_config.get('dictionary_path')
 
+        # load dictionary
+        if self.dictionary_path is not None:
+            self.load_custom_dictionary(self.dictionary_path)
+
+
 
 
     @classmethod
@@ -101,11 +106,11 @@ class JiebaTokenizer(Tokenizer, Component):
     def tokenize(self, text):
         # type: (Text) -> List[Token]
 
-        import jieba
-        if self.dictionary_path is not None:
-            self.load_custom_dictionary(self.dictionary_path)
+        #import jieba
+        #if self.dictionary_path is not None:
+        #    self.load_custom_dictionary(self.dictionary_path)
 
-        jieba.initialize()
+
         tokenized = jieba.tokenize(text)
 
         tokens = [Token(word, start) for (word, start, end) in tokenized]
