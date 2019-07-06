@@ -13,7 +13,7 @@ from rasa_nlu_gao.featurizers import Featurizer
 from rasa_nlu_gao.training_data import Message
 from rasa_nlu_gao.components import Component
 from rasa_nlu_gao.model import Metadata
-from bert_serving.client import BertClient
+from bert_serving.client import ConcurrentBertClient
 
 import numpy as np
 from tqdm import tqdm
@@ -53,7 +53,7 @@ class BertVectorsFeaturizer(Featurizer):
         check_version = self.component_config['check_version']
         timeout = self.component_config['timeout']
         identity = self.component_config['identity']
-        self.bc = BertClient(
+        self.bc = ConcurrentBertClient(
             ip=ip,
             port=port,
             port_out=port_out,
