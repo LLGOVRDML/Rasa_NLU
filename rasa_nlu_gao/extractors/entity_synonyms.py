@@ -2,15 +2,16 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
-
+import logging
 import os
 import warnings
-
+import time
 from builtins import str
 from typing import Any
 from typing import Dict
 from typing import Optional
 from typing import Text
+logger = logging.getLogger(__name__)
 
 from rasa_nlu_gao import utils
 from rasa_nlu_gao.extractors import EntityExtractor
@@ -50,9 +51,12 @@ class EntitySynonymMapper(EntityExtractor):
     def process(self, message, **kwargs):
         # type: (Message, **Any) -> None
 
+        start = time.time()
         updated_entities = message.get("entities", [])[:]
         self.replace_synonyms(updated_entities)
         message.set("entities", updated_entities, add_to_output=True)
+        end = time.time()
+        logger.info("synonyms time cost %.3f s" % (end - start))
 
     def persist(self, model_dir):
         # type: (Text) -> Optional[Dict[Text, Any]]

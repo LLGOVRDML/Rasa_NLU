@@ -4,6 +4,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import numpy as np
 import jieba
 import math
 import random
@@ -102,6 +103,52 @@ def prepare_dataset(sentences, char_to_id, tag_to_id, lower=False, train=True):
        
         data.append([string, chars, segs, tags])
 
+    return data
+
+
+def prepare_dataset_for_estimator(sentences, char_to_id, tag_to_id, lower=False, train=True):
+    """
+    Prepare the dataset. Return a list of lists of dictionaries containing:
+        - word indexes
+        - word char indexes
+        - tag indexes
+
+    Args:
+      sentences: 传入的句子（字符与对应的tag标记）
+      char_to_id: 字符与位置的映射关系
+      tag_to_id: tag标记与位置的映射关系
+
+    Return:
+      string: 训练数据的句子
+      chars:  句子中每个字符在字典中的位置
+      segs:   jieba分词后句子每个词语的长度, 0 表示单个字 1表示词语的开头 2表示词语的中间词 3表示词语的结尾
+      tags:   句子中对应的tag标记在字典中的位置
+    """
+
+    none_index = 0
+
+    def f(x):
+        return x.lower() if lower else x
+
+    data = {}
+    chars_list = []
+    segs_list = []
+    tags_list = []
+    for s in sentences:
+        string = [w[0] for w in s]
+        chars = [char_to_id[f(w) if f(w) in char_to_id else '<UNK>']
+                 for w in string]
+        segs = get_seg_features("".join(string))
+        if train:
+            tags = [tag_to_id[w[1]] for w in s]
+        else:
+            tags = [none_index for _ in chars]
+        chars_list.append(np.array(chars))
+        segs_list.append(np.array(segs))
+        tags_list.append(np.array(tags))
+    data["chars"] = np.array(chars_list)
+    data["segs"] = np.array(segs_list)
+    data["tags"] = np.array(tags_list)
     return data
 
 

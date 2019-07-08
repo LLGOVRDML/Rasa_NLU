@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import io
 import logging
 import os
+import time
 
 import typing
 from typing import List, Text, Any, Optional, Dict
@@ -252,7 +253,7 @@ class EmbeddingBertIntentEstimatorClassifier(Component):
         config_proto = self.get_config_proto(self.component_config)
 
         # sparse_softmax_cross_entropy , build linear classified model
-        self.estimator = tf.contrib.estimator.LinearEstimator(
+        self.estimator = tf.estimator.LinearEstimator(
                                                      head = head,
                                                      feature_columns=self.feature_columns,
                                                      optimizer='Ftrl',
@@ -279,6 +280,7 @@ class EmbeddingBertIntentEstimatorClassifier(Component):
         # type: (Message, **Any) -> None
         """Return the most likely intent and its similarity to the input."""
 
+        start = time.time()
         intent = {"name": None, "confidence": 0.0}
         intent_ranking = []
 
@@ -300,13 +302,6 @@ class EmbeddingBertIntentEstimatorClassifier(Component):
                     feature=feature
                 )
             )
-
-
-
-            # serialize tf.example to string
-
-
-
             examples.append(example.SerializeToString())
 
             # Make predictions.
@@ -335,6 +330,8 @@ class EmbeddingBertIntentEstimatorClassifier(Component):
 
         message.set("intent", intent, add_to_output=True)
         message.set("intent_ranking", intent_ranking, add_to_output=True)
+        end = time.time()
+        logger.info("bert intent classifier time cost %.3f s" % (end - start))
 
     def persist(self, model_dir):
         # type: (Text) -> Dict[Text, Any]

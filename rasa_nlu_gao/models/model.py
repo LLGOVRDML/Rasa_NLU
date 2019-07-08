@@ -4,6 +4,10 @@ from tensorflow.contrib.crf import crf_log_likelihood
 from tensorflow.contrib.crf import viterbi_decode
 from tensorflow.contrib.layers.python.layers import initializers
 from tensorflow.contrib import rnn
+import time
+
+import logging
+logger = logging.getLogger(__name__)
 
 from rasa_nlu_gao.utils.bilstm_utils import result_to_json
 from rasa_nlu_gao.utils.bilstm_utils import iobes_iob, iob_iobes
@@ -439,6 +443,9 @@ class Model(object):
     def evaluate_line(self, sess, inputs, id_to_tag):
         lengths, scores = self.run_step(sess, False, inputs)
         trans = self.trans.eval(session=sess)
+        start = time.time()
         batch_paths = self.decode(scores, lengths, trans)
+        end = time.time()
+        logger.info("bilstm entity extraction run_step time cost %.3f s" % (end - start))
         tags = [id_to_tag[idx] for idx in batch_paths[0]]
         return result_to_json(inputs[0][0], tags)

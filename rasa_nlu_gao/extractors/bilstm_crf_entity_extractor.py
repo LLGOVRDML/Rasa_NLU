@@ -7,6 +7,7 @@ import logging
 import os
 import re
 import io
+import time
 
 import typing
 import numpy as np
@@ -242,8 +243,11 @@ class BilstmCRFEntityExtractor(EntityExtractor):
 
     def process(self, message, **kwargs):
         # type: (Message, **Any) -> None
+        start = time.time()
         extracted = self.add_extractor_name(self.extract_entities(message))
         message.set("entities", message.get("entities", []) + extracted, add_to_output=True)
+        end = time.time()
+        logger.info("bilstm entity extraction time cost %.3f s" % (end - start))
 
     def extract_entities(self, message):
         # type: (Message) -> List[Dict[Text, Any]]

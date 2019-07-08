@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import logging
 import os
+import time
 import re
 from typing import Any, Dict, List, Optional, Text
 
@@ -54,6 +55,7 @@ class BertVectorsFeaturizer(Featurizer):
         timeout = self.component_config['timeout']
         identity = self.component_config['identity']
         self.bc = ConcurrentBertClient(
+            max_concurrency=20,
             ip=ip,
             port=port,
             port_out=port_out,
@@ -76,37 +78,47 @@ class BertVectorsFeaturizer(Featurizer):
     def _get_message_text(self, message):
         all_tokens = []
 
-
-
         for msg in message:
-            msg_tokens = []
-            for t in msg.get("tokens"):
-                text = self._replace_number_blank(t.text)
-                if text != '':
-                    msg_tokens.append(text)
-            a = str(msg_tokens)
-            a = a.replace('[', '')
-            a = a.replace(']', '')
-            a = a.replace(',', '')
-            a = a.replace('\'', '')
-            a = a.replace(' ', '')
-            all_tokens.append(list(a))
+            all_tokens.append(msg.text)
 
-        logger.info("bert vectors featurizer finished")
+        bert_embedding = self.bc.encode(all_tokens, is_tokenized=False)
 
-        try:
-            bert_embedding = self.bc.encode(all_tokens, is_tokenized=True)
+        return np.squeeze(bert_embedding)
 
-
-            bert_embedding = np.squeeze(bert_embedding)
-
-
-        except Exception as e:
-            bert_embedding = np.squeeze(np.random.normal(loc=0.0, scale=1.0, size=(1, 768)))
-            logger.info("error in creating train example")
-            logger.info(e)
-
-        return bert_embedding
+    # def _get_message_text(self, message):
+    #     all_tokens = []
+    #
+    #
+    #
+    #     for msg in message:
+    #         msg_tokens = []
+    #         for t in msg.get("tokens"):
+    #             text = self._replace_number_blank(t.text)
+    #             if text != '':
+    #                 msg_tokens.append(text)
+    #         a = str(msg_tokens)
+    #         a = a.replace('[', '')
+    #         a = a.replace(']', '')
+    #         a = a.replace(',', '')
+    #         a = a.replace('\'', '')
+    #         a = a.replace(' ', '')
+    #         all_tokens.append(list(a))
+    #
+    #     logger.info("bert vectors featurizer finished")
+    #
+    #     try:
+    #         bert_embedding = self.bc.encode(all_tokens, is_tokenized=True)
+    #
+    #
+    #         bert_embedding = np.squeeze(bert_embedding)
+    #
+    #
+    #     except Exception as e:
+    #         bert_embedding = np.squeeze(np.random.normal(loc=0.0, scale=1.0, size=(1, 768)))
+    #         logger.info("error in creating train example")
+    #         logger.info(e)
+    #
+    #     return bert_embedding
 
 
     def train(self, training_data, cfg=None, **kwargs):
@@ -129,9 +141,12 @@ class BertVectorsFeaturizer(Featurizer):
 
     def process(self, message, **kwargs):
         # type: (Message, **Any) -> None
+        start = time.time()
         message_text = self._get_message_text([message])
 
         message.set("text_features", self._combine_with_existing_text_features(message, message_text))
+        end = time.time()
+        logger.info("bert vectors featurizer time cost %.3f s" % (end - start))
 
     @classmethod
     def load(cls,

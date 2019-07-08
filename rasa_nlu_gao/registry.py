@@ -29,6 +29,7 @@ from rasa_nlu_gao.extractors.entity_synonyms import EntitySynonymMapper
 from rasa_nlu_gao.extractors.mitie_entity_extractor import MitieEntityExtractor
 from rasa_nlu_gao.extractors.spacy_entity_extractor import SpacyEntityExtractor
 from rasa_nlu_gao.extractors.crf_entity_extractor import CRFEntityExtractor
+from rasa_nlu_gao.extractors.bilstm_crf_entity_estimator_classifier import BilstmCRFEntityEstimatorExtractor
 
 
 from rasa_nlu_gao.extractors.bilstm_crf_entity_extractor import BilstmCRFEntityExtractor # customize
@@ -65,6 +66,7 @@ component_classes = [
     SpacyEntityExtractor, MitieEntityExtractor, DucklingExtractor,
     CRFEntityExtractor, DucklingHTTPExtractor,
     BilstmCRFEntityExtractor, # customize
+    BilstmCRFEntityEstimatorExtractor, # customize
     JiebaPsegExtractor, # customize
     EntityEditIntent,  # customize
     WordVectorsFeaturizer,  # customize

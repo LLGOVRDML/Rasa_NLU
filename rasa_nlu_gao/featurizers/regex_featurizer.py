@@ -3,6 +3,7 @@ import logging
 import numpy as np
 import os
 import re
+import time
 import typing
 from typing import Any, Dict, Optional, Text
 
@@ -46,8 +47,12 @@ class RegexFeaturizer(Featurizer):
 
     def process(self, message: Message, **kwargs: Any) -> None:
 
+        start = time.time()
+
         updated = self._text_features_with_regex(message,is_training=False)
         message.set("text_features", updated)
+        end = time.time()
+        logger.info("regex featurizer  time cost %.2f s" % (end - start))
 
     def _text_features_with_regex(self, message,is_training=True):
         if self.known_patterns:

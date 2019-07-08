@@ -29,6 +29,7 @@ from twisted.internet.defer import Deferred
 from twisted.logger import jsonFileLogObserver, Logger
 from typing import Text, Dict, Any, Optional, List
 
+
 logger = logging.getLogger(__name__)
 
 # in some execution environments `reactor.callFromThread`
@@ -108,6 +109,7 @@ class DataRouter(object):
 
         self.project_store = self._create_project_store(project_dir)
         self.pool = ProcessPool(self._training_processes)
+
 
     def __del__(self):
         """Terminates workers pool processes"""

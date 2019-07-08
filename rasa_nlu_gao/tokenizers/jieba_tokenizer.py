@@ -9,6 +9,7 @@ import os
 import shutil
 import datetime
 import jieba
+import time
 
 from rasa_nlu_gao.components import Component
 from rasa_nlu_gao.config import RasaNLUModelConfig
@@ -101,7 +102,10 @@ class JiebaTokenizer(Tokenizer, Component):
 
     def process(self, message, **kwargs):
         # type: (Message, **Any) -> None
+        start = time.time()
         message.set("tokens", self.tokenize(message.text))
+        end = time.time()
+        logger.info("jieba tokenizer time cost %.3f s" % (end - start))
 
     def tokenize(self, text):
         # type: (Text) -> List[Token]

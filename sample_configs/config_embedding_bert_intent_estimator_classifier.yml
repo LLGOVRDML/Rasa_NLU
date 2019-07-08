@@ -11,7 +11,8 @@
     timeout: 500
   #- name: "active_bert_nerual_classifier"
   - name: "intent_estimator_classifier_tensorflow_embedding_bert"
-  - name: "nlp_spacy"
+  #- name: "nlp_spacy"
   - name: "intent_entity_featurizer_regex"
-  - name: "ner_bilstm_crf"
+  - name: "ner_bilstm_crf_estimator"
+  #- name: "ner_bilstm_crf"
   - name: "ner_synonyms"

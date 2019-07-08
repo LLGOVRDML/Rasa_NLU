@@ -227,7 +227,7 @@ class RasaNLU(object):
     @check_cors
     @inlineCallbacks
     def parse(self, request):
-        start = time.time()
+
         request.setHeader('Content-Type', 'application/json')
         if request.method.decode('utf-8', 'strict') == 'GET':
             request_params = decode_parameters(request)
@@ -249,14 +249,16 @@ class RasaNLU(object):
             returnValue(dumped)
         else:
             data = self.data_router.extract(request_params)
+
             try:
                 request.setResponseCode(200)
-
+                start = time.time()
                 response = yield (self.data_router.parse(data) if True
                                   else threads.deferToThread(
                                   self.data_router.parse, data))
+
                 end = time.time()
-                logger.info("parse time cost %.2f s" % (end - start))
+                logger.info("parse time cost %.3f s" % (end - start))
                 
                 returnValue(json_to_string(response))
             except InvalidProjectError as e:
