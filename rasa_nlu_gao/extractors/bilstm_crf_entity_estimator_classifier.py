@@ -134,7 +134,7 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
                                                     self.component_config["batch_size"],
                                                     shuffle_num=100,
                                                     mode=tf.estimator.ModeKeys.TRAIN),
-                                                    max_steps=20
+                                                    max_steps=800
                              )
 
 
@@ -268,9 +268,6 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         self.num_segs = 4 # 0,1,2,3
         self.is_training = params["is_training"]
 
-        self.global_step = tf.Variable(0, trainable=False)
-        self.best_dev_f1 = tf.Variable(0.0, trainable=False)
-        self.best_test_f1 = tf.Variable(0.0, trainable=False)
 
         self.initializer = initializers.xavier_initializer()
         self.char_inputs,self.seg_inputs = features
@@ -295,21 +292,6 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
         # logits for tags
         self.logits = self.project_layer_bilstm(model_outputs)
-
-        # 预测
-        #predictions = {
-        #    'classes': tf.argmax(input=self.logits, axis=1, name='classes'),
-        #    'probabilities': tf.nn.softmax(self.logits, name='softmax_tensor')
-        #}
-
-        # 评估方法
-        #accuracy, update_op = tf.metrics.accuracy(
-        #    labels=labels, predictions=predictions['classes'], name='accuracy')
-        #batch_acc = tf.reduce_mean(tf.cast(
-        #    tf.equal(tf.cast(labels, tf.int64), predictions['classes']), tf.float32))
-        #tf.summary.scalar('batch_acc', batch_acc)
-        #tf.summary.scalar('streaming_acc', update_op)
-
 
         if mode == tf.estimator.ModeKeys.PREDICT:
             return tf.estimator.EstimatorSpec(
@@ -338,15 +320,11 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
                                      for g, v in grads_vars]
                 # 更新梯度（可以用移动均值更新梯度试试，然后重新跑下程序）
                 self.train_op = self.opt.apply_gradients(
-                    capped_grads_vars, self.global_step)
+                    capped_grads_vars, tf.train.get_global_step())
+
+
 
                 return tf.estimator.EstimatorSpec(mode, loss=self.loss, train_op=self.train_op)
-
-        #eval_metric_ops = {
-        #    'accuracy': (accuracy, update_op)
-        #}
-        #return tf.estimator.EstimatorSpec(mode=mode, loss=self.loss, eval_metric_ops=eval_metric_ops)
-
 
     def loss_layer(self, project_logits, lengths, name=None):
         """
