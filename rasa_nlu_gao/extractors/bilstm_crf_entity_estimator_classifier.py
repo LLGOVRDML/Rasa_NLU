@@ -7,7 +7,8 @@ from tensorflow.contrib.layers.python.layers import initializers
 from tensorflow.contrib import rnn
 import logging
 import re
-import numpy as np
+import functools
+from tensorflow.contrib.crf import crf_log_likelihood
 
 
 import typing
@@ -58,7 +59,7 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         "model_type": "bilstm",
         "clip": 5,
         "optimizer": "adam",
-        "dropout_keep": 0.5,
+        "dropout": 0.5,
         "steps_check": 100,
         "config_proto": {
             "device_count": cpu_count(),
@@ -106,25 +107,11 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
             self.component_config["num_chars"] = len(char_to_id)
             self.component_config["num_tags"] = len(tag_to_id)
+            self.component_config["is_training"] = True
 
             train_data = prepare_dataset_for_estimator(
                 train_sentences, char_to_id, tag_to_id, self.component_config["lower"]
             )
-
-            # define feature spec for input x parsing
-            feature_names = ['ChatInputs','SegInputs','Dropout']
-            chatInput_feature = tf.feature_column.numeric_column(key='ChatInputs',
-                                                                 shape=[1, len(train_data["chars"][0])])
-            segInputs_feature = tf.feature_column.numeric_column(key='SegInputs',
-                                                                 shape=[1, len(train_data["segs"][0])])
-            dropout_feature = tf.feature_column.numeric_column(key='Dropout')
-
-            self.feature_columns = [
-                chatInput_feature,
-                segInputs_feature,
-                dropout_feature
-            ]
-
             # set gpu and tf graph confing
             tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -140,13 +127,14 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
 
 
-            x_tensor_train = {'ChatInputs':chatInput_array,'SegInputs':segInputs_array,'Dropout':0.5}
+            #x_tensor_train = {'ChatInputs':chatInput_array,'SegInputs':segInputs_array}
+            x_tensor_train = (chatInput_array,segInputs_array)
             classifier.train(input_fn=lambda: self.input_fn(x_tensor_train,
                                                     train_data["tags"],
                                                     self.component_config["batch_size"],
                                                     shuffle_num=100,
                                                     mode=tf.estimator.ModeKeys.TRAIN),
-                                                    max_steps=800
+                                                    max_steps=20
                              )
 
 
@@ -236,6 +224,11 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         config.gpu_options.allocator_type = component_config['config_proto']['allocator_type']
         return config
 
+    def generator_fn(self,features, labels):
+        char_inputs, seg_inputs = features
+        for i in range(len(char_inputs)):
+            yield (char_inputs[i],seg_inputs[i]),labels[i]
+
 
     def input_fn(self,features, labels, batch_size, shuffle_num, mode):
         """
@@ -248,11 +241,19 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         :param mode: type string ,tf.estimator.ModeKeys.TRAIN or tf.estimator.ModeKeys.PREDICT
         :return: set() with type of (tf.data , and labels)
         """
-        dataset = tf.data.Dataset.from_tensor_slices((features, labels))
+        shapes = (([None],[None]), [None])
+        types = ((tf.int32,tf.int32), tf.int32)
+
+        dataset = tf.data.Dataset.from_generator(
+            functools.partial(self.generator_fn, features, labels),
+            output_shapes=shapes, output_types=types)
+        #dataset = (dataset
+        #           .padded_batch(batch_size, shapes, defaults)
+        #           .prefetch(1))
         if mode == tf.estimator.ModeKeys.TRAIN:
-            dataset = dataset.shuffle(shuffle_num).batch(batch_size).repeat(self.epochs)
+            dataset = dataset.shuffle(shuffle_num).padded_batch(batch_size, shapes).repeat()
         else:
-            dataset = dataset.batch(batch_size)
+            dataset = dataset.padded_batch(batch_size, shapes)
         iterator = dataset.make_one_shot_iterator()
         data, labels = iterator.get_next()
         return data, labels
@@ -272,12 +273,9 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         self.best_test_f1 = tf.Variable(0.0, trainable=False)
 
         self.initializer = initializers.xavier_initializer()
-
-        # # add placeholders for the model
-
-        self.char_inputs = features['char_inputs']
-        self.seg_inputs = features['SegInputs']
-        self.dropout = features['Dropout']
+        self.char_inputs,self.seg_inputs = features
+        self.targets = labels
+        self.dropout = params["dropout"]
 
         used = tf.sign(tf.abs(self.char_inputs))
         length = tf.reduce_sum(used, reduction_indices=1)
@@ -299,18 +297,18 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         self.logits = self.project_layer_bilstm(model_outputs)
 
         # 预测
-        predictions = {
-            'classes': tf.argmax(input=self.logits, axis=1, name='classes'),
-            'probabilities': tf.nn.softmax(self.logits, name='softmax_tensor')
-        }
+        #predictions = {
+        #    'classes': tf.argmax(input=self.logits, axis=1, name='classes'),
+        #    'probabilities': tf.nn.softmax(self.logits, name='softmax_tensor')
+        #}
 
         # 评估方法
-        accuracy, update_op = tf.metrics.accuracy(
-            labels=labels, predictions=predictions['classes'], name='accuracy')
-        batch_acc = tf.reduce_mean(tf.cast(
-            tf.equal(tf.cast(labels, tf.int64), predictions['classes']), tf.float32))
-        tf.summary.scalar('batch_acc', batch_acc)
-        tf.summary.scalar('streaming_acc', update_op)
+        #accuracy, update_op = tf.metrics.accuracy(
+        #    labels=labels, predictions=predictions['classes'], name='accuracy')
+        #batch_acc = tf.reduce_mean(tf.cast(
+        #    tf.equal(tf.cast(labels, tf.int64), predictions['classes']), tf.float32))
+        #tf.summary.scalar('batch_acc', batch_acc)
+        #tf.summary.scalar('streaming_acc', update_op)
 
 
         if mode == tf.estimator.ModeKeys.PREDICT:
@@ -318,12 +316,12 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
                 mode=mode,
                 predictions=self.logits)
 
-        if mode == tf.estimator.ModeKeys.TRAIN:
+        else:
             # loss of the model
             self.loss = self.loss_layer(self.logits, self.lengths)
 
             with tf.variable_scope("optimizer"):
-                optimizer = self.config["optimizer"]
+                optimizer = params["optimizer"]
                 if optimizer == "sgd":
                     self.opt = tf.train.GradientDescentOptimizer(self.lr)
                 elif optimizer == "adam":
@@ -336,7 +334,7 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
                 # apply grad clip to avoid gradient explosion
                 # 梯度裁剪防止梯度爆炸
                 grads_vars = self.opt.compute_gradients(self.loss)
-                capped_grads_vars = [[tf.clip_by_value(g, -self.config["clip"], self.config["clip"]), v]
+                capped_grads_vars = [[tf.clip_by_value(g, -params["clip"], params["clip"]), v]
                                      for g, v in grads_vars]
                 # 更新梯度（可以用移动均值更新梯度试试，然后重新跑下程序）
                 self.train_op = self.opt.apply_gradients(
@@ -344,10 +342,53 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
                 return tf.estimator.EstimatorSpec(mode, loss=self.loss, train_op=self.train_op)
 
-        eval_metric_ops = {
-            'accuracy': (accuracy, update_op)
-        }
-        return tf.estimator.EstimatorSpec(mode=mode, loss=self.loss, eval_metric_ops=eval_metric_ops)
+        #eval_metric_ops = {
+        #    'accuracy': (accuracy, update_op)
+        #}
+        #return tf.estimator.EstimatorSpec(mode=mode, loss=self.loss, eval_metric_ops=eval_metric_ops)
+
+
+    def loss_layer(self, project_logits, lengths, name=None):
+        """
+        calculate crf loss
+        :param project_logits: [1, num_steps, num_tags]
+        :return: scalar loss
+        """
+        with tf.variable_scope("crf_loss" if not name else name):
+            small = -1000.0
+            # pad logits for crf loss
+            # start_logits.shape (?, 1, 52)
+            start_logits = tf.concat(
+                [small * tf.ones(shape=[self.batch_size, 1, self.num_tags]), tf.zeros(shape=[self.batch_size, 1, 1])], axis=-1)
+            pad_logits = tf.cast(
+                small * tf.ones([self.batch_size, self.num_steps, 1]), tf.float32)
+            # project_logits.shape (?, ?, 51)
+            # pad_logits.shape (?, ?, 1)
+            # logits.shape (?, ?, 52)
+            logits = tf.concat([project_logits, pad_logits], axis=-1)
+            logits = tf.concat([start_logits, logits], axis=1)
+            targets = tf.concat(
+                [tf.cast(self.num_tags*tf.ones([self.batch_size, 1]), tf.int32), self.targets], axis=-1)
+
+            self.trans = tf.get_variable(
+                "transitions",
+                shape=[self.num_tags + 1, self.num_tags + 1],
+                initializer=self.initializer)
+
+            # crf_log_likelihood在一个条件随机场里面计算标签序列的log-likelihood
+            # inputs: 一个形状为[batch_size, max_seq_len, num_tags] 的tensor,
+            # 一般使用BILSTM处理之后输出转换为他要求的形状作为CRF层的输入.
+            # tag_indices: 一个形状为[batch_size, max_seq_len] 的矩阵,其实就是真实标签.
+            # sequence_lengths: 一个形状为 [batch_size] 的向量,表示每个序列的长度.
+            # transition_params: 形状为[num_tags, num_tags] 的转移矩阵
+            # log_likelihood: 标量, log-likelihood
+            log_likelihood, self.trans = crf_log_likelihood(
+                inputs=logits,
+                tag_indices=targets,
+                transition_params=self.trans,
+                sequence_lengths=lengths+1)
+            return tf.reduce_mean(-log_likelihood)
+
 
     def embedding_layer(self, char_inputs, seg_inputs, config, name=None):
         """

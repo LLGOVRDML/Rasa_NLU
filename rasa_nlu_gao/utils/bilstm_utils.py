@@ -146,9 +146,9 @@ def prepare_dataset_for_estimator(sentences, char_to_id, tag_to_id, lower=False,
         chars_list.append(np.array(chars))
         segs_list.append(np.array(segs))
         tags_list.append(np.array(tags))
-    data["chars"] = np.array(chars_list)
-    data["segs"] = np.array(segs_list)
-    data["tags"] = np.array(tags_list)
+    data["chars"] = chars_list
+    data["segs"] = segs_list
+    data["tags"] = tags_list
     return data
 
 
