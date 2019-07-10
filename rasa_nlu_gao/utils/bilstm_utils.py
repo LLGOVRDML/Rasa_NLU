@@ -134,6 +134,7 @@ def prepare_dataset_for_estimator(sentences, char_to_id, tag_to_id, lower=False,
     chars_list = []
     segs_list = []
     tags_list = []
+    max_length = 0
     for s in sentences:
         string = [w[0] for w in s]
         chars = [char_to_id[f(w) if f(w) in char_to_id else '<UNK>']
@@ -143,12 +144,15 @@ def prepare_dataset_for_estimator(sentences, char_to_id, tag_to_id, lower=False,
             tags = [tag_to_id[w[1]] for w in s]
         else:
             tags = [none_index for _ in chars]
+        if len(chars)>max_length:
+            max_length = len(chars)
         chars_list.append(np.array(chars))
         segs_list.append(np.array(segs))
         tags_list.append(np.array(tags))
     data["chars"] = chars_list
     data["segs"] = segs_list
     data["tags"] = tags_list
+    data["max_length"] = max_length
     return data
 
 

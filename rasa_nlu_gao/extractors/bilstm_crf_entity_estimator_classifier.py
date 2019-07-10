@@ -7,6 +7,8 @@ from tensorflow.contrib.layers.python.layers import initializers
 from tensorflow.contrib import rnn
 import logging
 import re
+import os
+import io
 import functools
 from tensorflow.contrib.crf import crf_log_likelihood
 
@@ -81,7 +83,6 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
         self.component_config = component_config
         self.ent_tagger = ent_tagger  # 指的是训练好的model
-        self.session = session
         self.char_to_id = char_to_id
         self.id_to_tag = id_to_tag
 
@@ -118,18 +119,16 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
             config_proto = self.get_config_proto(self.component_config)
 
             # 创建实体识别模型
-            classifier = tf.estimator.Estimator(
+            self.estimator = tf.estimator.Estimator(
                 model_fn=self.model_fn,
                 params=self.component_config)
 
             chatInput_array = train_data["chars"]
             segInputs_array = train_data["segs"]
+            self.max_length = train_data["max_length"]
 
-
-
-            #x_tensor_train = {'ChatInputs':chatInput_array,'SegInputs':segInputs_array}
             x_tensor_train = (chatInput_array,segInputs_array)
-            classifier.train(input_fn=lambda: self.input_fn(x_tensor_train,
+            self.estimator.train(input_fn=lambda: self.input_fn(x_tensor_train,
                                                     train_data["tags"],
                                                     self.component_config["batch_size"],
                                                     shuffle_num=100,
@@ -227,7 +226,12 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
     def generator_fn(self,features, labels):
         char_inputs, seg_inputs = features
         for i in range(len(char_inputs)):
-            yield (char_inputs[i],seg_inputs[i]),labels[i]
+            try:
+                yield (char_inputs[i], seg_inputs[i]), labels[i]
+            except Exception as e:
+                print(str(e))
+
+
 
 
     def input_fn(self,features, labels, batch_size, shuffle_num, mode):
@@ -452,3 +456,46 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
                 pred = tf.nn.xw_plus_b(hidden, W, b)
 
             return tf.reshape(pred, [-1, self.num_steps, self.num_tags])
+
+
+
+
+
+    def persist(self, model_dir):
+        # type: (Text) -> Optional[Dict[Text, Any]]
+        """Persist this model into the passed directory.
+        Return the metadata necessary to load the model again."""
+        if self.estimator is None:
+            return {"classifier_file": None}
+        model_dir = os.path.join(model_dir)
+        if 1 - os.path.exists(model_dir):
+            os.makedirs(model_dir)
+
+
+        print(self.max_length)
+
+        self.feature_columns = {
+            tf.feature_column.numeric_column(key='IteratorGetNext:0', shape=[1, self.max_length]),
+            tf.feature_column.numeric_column(key='IteratorGetNext:1', shape=[1, self.max_length])
+        }
+
+        # build feature spec for tf.example parsing
+        feature_spec = tf.feature_column.make_parse_example_spec(self.feature_columns)
+        # build tf.example parser
+        serving_input_receiver_fn = tf.estimator.export.build_parsing_serving_input_receiver_fn(feature_spec)
+
+        print(model_dir)
+
+        self.estimator.export_saved_model(model_dir, serving_input_receiver_fn)
+
+
+        with io.open(os.path.join(
+                model_dir,
+                self.name + "_char_to_id.pkl"), 'wb') as f:
+            pickle.dump(self.char_to_id, f)
+        with io.open(os.path.join(
+                model_dir,
+                self.name + "_id_to_tag.pkl"), 'wb') as f:
+            pickle.dump(self.id_to_tag, f)
+
+        return {"classifier_file": self.name + ".ckpt"}
