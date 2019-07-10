@@ -449,4 +449,3 @@ class Model(object):
         logger.info("bilstm entity extraction run_step time cost %.3f s" % (end - start))
         tags = [id_to_tag[idx] for idx in batch_paths[0]]
         return result_to_json(inputs[0][0], tags)
-

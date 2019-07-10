@@ -343,24 +343,6 @@ def input_from_line(line, char_to_id):
     inputs.append([[]])
     return inputs
 
-def input_from_line_for_estimator(line, char_to_id):
-    """
-    Take sentence data and return an input for
-    the training or the evaluation function.
-    将输入转化为 string, chars, segs, tags 四个特征
-    """
-    line = full_to_half(line)
-    line = replace_html(line)
-    inputs = dict()
-    inputs['text'] = line
-    line.replace(" ", "$")
-    # 未登录词按<UNK>字符处理
-    inputs['char_input'] = [char_to_id[char] if char in char_to_id else char_to_id["<UNK>"]
-                    for char in line]
-    inputs['seg_input'] = get_seg_features(line)
-    inputs['tags'] = []
-    return inputs
-
 
 def full_to_half(s):
     """

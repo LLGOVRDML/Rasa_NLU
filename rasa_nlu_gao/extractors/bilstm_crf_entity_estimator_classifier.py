@@ -10,10 +10,7 @@ import re
 import os
 import io
 import functools
-import time
-import numpy as np
 from tensorflow.contrib.crf import crf_log_likelihood
-from tensorflow.contrib.crf import viterbi_decode
 
 
 import typing
@@ -29,9 +26,8 @@ except ImportError:
 from rasa_nlu_gao.extractors import EntityExtractor
 
 
-from rasa_nlu_gao.utils.bilstm_utils import char_mapping, tag_mapping, prepare_dataset_for_estimator, iob_iobes, iob2, input_from_line_for_estimator
+from rasa_nlu_gao.utils.bilstm_utils import char_mapping, tag_mapping, prepare_dataset,prepare_dataset_for_estimator, iob_iobes, iob2
 from multiprocessing import cpu_count
-from tensorflow.contrib import predictor as Pred
 
 logger = logging.getLogger(__name__)
 
@@ -79,15 +75,16 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
     def __init__(self,
                  component_config=None,
+                 ent_tagger=None,
+                 session=None,
                  char_to_id=None,
-                 id_to_tag=None,
-                 predictor=None):
+                 id_to_tag=None):
         super(BilstmCRFEntityEstimatorExtractor, self).__init__(component_config)
 
         self.component_config = component_config
+        self.ent_tagger = ent_tagger  # 指的是训练好的model
         self.char_to_id = char_to_id
         self.id_to_tag = id_to_tag
-        self.predictor = predictor
 
     def train(self, training_data, config, **kwargs):
         self.component_config = config.for_component(self.name, self.defaults)
@@ -119,6 +116,8 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
             # set gpu and tf graph confing
             tf.logging.set_verbosity(tf.logging.INFO)
 
+            config_proto = self.get_config_proto(self.component_config)
+
             # 创建实体识别模型
             self.estimator = tf.estimator.Estimator(
                 model_fn=self.model_fn,
@@ -127,7 +126,6 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
             chatInput_array = train_data["chars"]
             segInputs_array = train_data["segs"]
             self.max_length = train_data["max_length"]
-            self.component_config['max_length']=self.max_length
 
             x_tensor_train = (chatInput_array,segInputs_array)
             self.estimator.train(input_fn=lambda: self.input_fn(x_tensor_train,
@@ -253,6 +251,9 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         dataset = tf.data.Dataset.from_generator(
             functools.partial(self.generator_fn, features, labels),
             output_shapes=shapes, output_types=types)
+        #dataset = (dataset
+        #           .padded_batch(batch_size, shapes, defaults)
+        #           .prefetch(1))
         if mode == tf.estimator.ModeKeys.TRAIN:
             dataset = dataset.shuffle(shuffle_num).padded_batch(batch_size, shapes).repeat()
         else:
@@ -261,7 +262,7 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         data, labels = iterator.get_next()
         return data, labels
 
-    def model_fn(self,features, labels, mode, params):
+    def model_fn(self,features, labels, mode,params):
         self.lr = params["lr"]
         self.char_dim = params["char_dim"]
         self.lstm_dim = params["lstm_dim"]
@@ -273,13 +274,8 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
 
         self.initializer = initializers.xavier_initializer()
-        if mode == tf.estimator.ModeKeys.PREDICT:
-            self.char_inputs = features['IteratorGetNext:0']
-            self.seg_inputs = features['IteratorGetNext:1']
-        else:
-            self.char_inputs, self.seg_inputs = features
-
-
+        self.char_inputs,self.seg_inputs = features
+        self.targets = labels
         self.dropout = params["dropout"]
 
         used = tf.sign(tf.abs(self.char_inputs))
@@ -287,33 +283,29 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         self.lengths = tf.cast(length, tf.int32)
         self.batch_size = tf.shape(self.char_inputs)[0]
         self.num_steps = tf.shape(self.char_inputs)[-1]
+
         # embeddings for chinese character and segmentation representation
         # 根据 char_inputs 和 seg_inputs 初始化向量
         embedding = self.embedding_layer(
             self.char_inputs, self.seg_inputs, params)
-        if mode == tf.estimator.ModeKeys.PREDICT:
-            model_inputs = embedding
-        else:
-            model_inputs = tf.nn.dropout(embedding, self.dropout)
+
+        model_inputs = tf.nn.dropout(embedding, self.dropout)
+
         model_outputs = self.biLSTM_layer(
             model_inputs, self.lstm_dim, self.lengths)
+
         # logits for tags
         self.logits = self.project_layer_bilstm(model_outputs)
-        if mode == tf.estimator.ModeKeys.PREDICT:
-            self.targets = tf.placeholder(dtype=tf.int32,
-                                          shape=[None, None],
-                                          name="Targets")
-        else:
-            self.targets = labels
-        self.loss = self.loss_layer(self.logits, self.lengths)
+
         if mode == tf.estimator.ModeKeys.PREDICT:
             return tf.estimator.EstimatorSpec(
                 mode=mode,
-                predictions={
-                    'logits': self.logits
-                })
+                predictions=self.logits)
 
         else:
+            # loss of the model
+            self.loss = self.loss_layer(self.logits, self.lengths)
+
             with tf.variable_scope("optimizer"):
                 optimizer = params["optimizer"]
                 if optimizer == "sgd":
@@ -333,6 +325,9 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
                 # 更新梯度（可以用移动均值更新梯度试试，然后重新跑下程序）
                 self.train_op = self.opt.apply_gradients(
                     capped_grads_vars, tf.train.get_global_step())
+
+
+
                 return tf.estimator.EstimatorSpec(mode, loss=self.loss, train_op=self.train_op)
 
     def loss_layer(self, project_logits, lengths, name=None):
@@ -476,18 +471,23 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         if 1 - os.path.exists(model_dir):
             os.makedirs(model_dir)
 
-        self.feature_columns = (
-            tf.feature_column.numeric_column(key='IteratorGetNext:0', shape=[self.max_length],dtype=tf.int64),
-            tf.feature_column.numeric_column(key='IteratorGetNext:1', shape=[self.max_length],dtype=tf.int64)
-        )
+
+        print(self.max_length)
+
+        self.feature_columns = {
+            tf.feature_column.numeric_column(key='IteratorGetNext:0', shape=[1, self.max_length]),
+            tf.feature_column.numeric_column(key='IteratorGetNext:1', shape=[1, self.max_length])
+        }
 
         # build feature spec for tf.example parsing
         feature_spec = tf.feature_column.make_parse_example_spec(self.feature_columns)
         # build tf.example parser
         serving_input_receiver_fn = tf.estimator.export.build_parsing_serving_input_receiver_fn(feature_spec)
-        path = self.estimator.export_saved_model(model_dir, serving_input_receiver_fn)
-        # decode model path to string
-        file_dir = os.path.basename(path).decode('utf-8')
+
+        print(model_dir)
+
+        self.estimator.export_saved_model(model_dir, serving_input_receiver_fn)
+
 
         with io.open(os.path.join(
                 model_dir,
@@ -497,118 +497,5 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
                 model_dir,
                 self.name + "_id_to_tag.pkl"), 'wb') as f:
             pickle.dump(self.id_to_tag, f)
-        return {"classifier_file": file_dir}
 
-    @classmethod
-    def load(cls,
-             model_dir=None,  # type: Text
-             model_metadata=None,  # type: Metadata
-             cached_component=None,  # type: Optional[Component]
-             **kwargs  # type: **Any
-             ):
-        # type: (...) -> EmbeddingBertIntentAdanetClassifier
-
-        meta = model_metadata.for_component(cls.name)
-        meta.update({'dropout': 0.0})
-        config_proto = cls.get_config_proto(meta)
-
-        logger.info("bert model loaded")
-
-        if model_dir and meta.get("classifier_file"):
-            file_name = meta.get("classifier_file")
-            # tensorflow.contrib.predictor to load the model file which may has 10x speed up in predict time
-            predict = Pred.from_saved_model(export_dir=os.path.join(model_dir, file_name), config=config_proto)
-
-            with io.open(os.path.join(
-                    model_dir,
-                    cls.name + "_char_to_id.pkl"), 'rb') as f:
-                char_to_id = pickle.load(f)
-            with io.open(os.path.join(
-                    model_dir,
-                    cls.name + "_id_to_tag.pkl"), 'rb') as f:
-                id_to_tag = pickle.load(f)
-
-            return BilstmCRFEntityEstimatorExtractor(
-                component_config=meta,
-                char_to_id=char_to_id,
-                id_to_tag=id_to_tag,
-                predictor=predict
-            )
-
-        else:
-            logger.warning("Failed to load nlu model. Maybe path {} "
-                           "doesn't exist"
-                           "".format(os.path.abspath(model_dir)))
-            return BilstmCRFEntityEstimatorExtractor(component_config=meta)
-
-    def process(self, message, **kwargs):
-        # type: (Message, **Any) -> None
-        start = time.time()
-        extracted = self.add_extractor_name(self.extract_entities(message))
-        message.set("entities", message.get("entities", []) + extracted, add_to_output=True)
-        end = time.time()
-        logger.info("bilstm entity extraction time cost %.3f s" % (end - start))
-
-    def extract_entities(self, message):
-        # type: (Message) -> List[Dict[Text, Any]]
-        """Take a sentence and return entities in json format"""
-        if self.predictor is not None:
-            inputs = input_from_line_for_estimator(message.text, self.char_to_id)
-            char_input_list = inputs['char_input']
-            original_len = len(char_input_list)
-            char_input_array = np.pad(np.array(char_input_list), ((0,self.component_config['max_length']-len(char_input_list))), 'constant')
-            char_input_list = char_input_array.tolist()
-            seg_input_list = inputs['seg_input']
-            seg_input_array = np.pad(np.array(seg_input_list), ((0,self.component_config['max_length']-len(seg_input_list))), 'constant')
-            seg_input_list = seg_input_array.tolist()
-
-            examples = []
-            feature = {}
-            # convert input x to tf.feature with float feature spec
-            feature['IteratorGetNext:0'] = tf.train.Feature(int64_list=tf.train.Int64List(value=char_input_list))
-            feature['IteratorGetNext:1'] = tf.train.Feature(int64_list=tf.train.Int64List(value=seg_input_list))
-            # build tf.example for prediction
-            example = tf.train.Example(
-                features=tf.train.Features(
-                    feature=feature
-                )
-            )
-            examples.append(example.SerializeToString())
-
-            # Make predictions.
-            logger.info("estimator prediction finished")
-            result_dict = self.predictor({'examples': examples})
-            sess = self.predictor.session
-            tf.Session()
-            graph = sess.graph
-            variables = graph.get_collection("variables")
-            var_transition = variables[len(variables)-1]
-            transition = var_transition.eval(session=sess)
-            batch_paths = self.decode(list(result_dict["logits"][0]), [original_len], transition)
-            tags = [self.id_to_tag[idx] for idx in batch_paths[0]]
-
-            return result_dict
-        else:
-            return []
-
-
-    def decode(self, logits, lengths, matrix):
-        """
-        :param logits: [batch_size, num_steps, num_tags]float32, logits
-        :param lengths: [batch_size]int32, real length of each sequence
-        :param matrix: transaction matrix for inference
-        :return:
-        """
-        # inference final labels usa viterbi Algorithm
-        paths = []
-        small = -1000.0
-        start = np.asarray([[small]*self.component_config["num_tags"] + [0]])
-        for score, length in zip(logits, lengths):
-            score = score[:length]
-            pad = small * np.ones([length, 1])
-            logits = np.concatenate([score, pad], axis=1)
-            logits = np.concatenate([start, logits], axis=0)
-            path, _ = viterbi_decode(logits, matrix)
-
-            paths.append(path[1:])
-        return paths
+        return {"classifier_file": self.name + ".ckpt"}
