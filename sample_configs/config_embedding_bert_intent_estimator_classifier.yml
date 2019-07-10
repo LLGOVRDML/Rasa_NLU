@@ -16,3 +16,15 @@
   - name: "ner_bilstm_crf_estimator"
   #- name: "ner_bilstm_crf"
   - name: "ner_synonyms"
+  #- name: "ner_duckling_http"
+  #  dimensions: [
+  #              "number",
+  #              "phone-number",
+  #              "time"
+  #          ]
+  #  url: 'http://localhost:8000'
+  #  locale: 'zh_CN'
+  #  timezone: 'Asia/Shanghai'
+  #- name: "ner_regex_entity"
+  #  #regexs: ['([1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx])']
+  #  startusing: True
