@@ -30,6 +30,7 @@ from rasa_nlu_gao.extractors.mitie_entity_extractor import MitieEntityExtractor
 from rasa_nlu_gao.extractors.spacy_entity_extractor import SpacyEntityExtractor
 from rasa_nlu_gao.extractors.crf_entity_extractor import CRFEntityExtractor
 from rasa_nlu_gao.extractors.bilstm_crf_entity_estimator_classifier import BilstmCRFEntityEstimatorExtractor
+from rasa_nlu_gao.extractors.regex_entity_extractor import RegexEntityExtractor
 
 
 from rasa_nlu_gao.extractors.bilstm_crf_entity_extractor import BilstmCRFEntityExtractor # customize
@@ -64,7 +65,7 @@ if typing.TYPE_CHECKING:
 component_classes = [
     SpacyNLP, MitieNLP,
     SpacyEntityExtractor, MitieEntityExtractor, DucklingExtractor,
-    CRFEntityExtractor, DucklingHTTPExtractor,
+    CRFEntityExtractor, DucklingHTTPExtractor,RegexEntityExtractor,
     BilstmCRFEntityExtractor, # customize
     BilstmCRFEntityEstimatorExtractor, # customize
     JiebaPsegExtractor, # customize
