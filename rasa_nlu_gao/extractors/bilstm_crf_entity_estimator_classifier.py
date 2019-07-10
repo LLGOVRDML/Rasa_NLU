@@ -29,7 +29,7 @@ except ImportError:
 from rasa_nlu_gao.extractors import EntityExtractor
 
 
-from rasa_nlu_gao.utils.bilstm_utils import char_mapping, tag_mapping, prepare_dataset_for_estimator, iob_iobes, iob2, input_from_line_for_estimator
+from rasa_nlu_gao.utils.bilstm_utils import char_mapping, tag_mapping, prepare_dataset_for_estimator, iob_iobes, iob2, input_from_line_for_estimator, result_to_json
 from multiprocessing import cpu_count
 from tensorflow.contrib import predictor as Pred
 
@@ -310,7 +310,8 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
             return tf.estimator.EstimatorSpec(
                 mode=mode,
                 predictions={
-                    'logits': self.logits
+                    'logits': self.logits,
+                    'length': self.lengths
                 })
 
         else:
@@ -544,18 +545,22 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
     def process(self, message, **kwargs):
         # type: (Message, **Any) -> None
         start = time.time()
-        extracted = self.add_extractor_name(self.extract_entities(message))
+        extracted = self.add_extractor_name(self.extract_line(message))
         message.set("entities", message.get("entities", []) + extracted, add_to_output=True)
         end = time.time()
-        logger.info("bilstm entity extraction time cost %.3f s" % (end - start))
+        logger.info("bilstm estimator entity extraction time cost %.3f s" % (end - start))
+
+    def extract_line(self,message):
+        result = self.extract_entities(message)
+        return result.get("entities", [])
 
     def extract_entities(self, message):
         # type: (Message) -> List[Dict[Text, Any]]
         """Take a sentence and return entities in json format"""
         if self.predictor is not None:
+            start_interal = time.time()
             inputs = input_from_line_for_estimator(message.text, self.char_to_id)
             char_input_list = inputs['char_input']
-            original_len = len(char_input_list)
             char_input_array = np.pad(np.array(char_input_list), ((0,self.component_config['max_length']-len(char_input_list))), 'constant')
             char_input_list = char_input_array.tolist()
             seg_input_list = inputs['seg_input']
@@ -577,17 +582,27 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
             # Make predictions.
             logger.info("estimator prediction finished")
+            end_interal = time.time()
+            logger.info("prepare for entity extracting time cost %.3f s" % (end_interal -start_interal))
+            begin_predict_interal = time.time()
             result_dict = self.predictor({'examples': examples})
+            end_predict_interal = time.time()
+            logger.info("prediction in entity extracting time cost %.3f s" % (end_predict_interal - begin_predict_interal))
+
+            begin_process_predict = time.time()
             sess = self.predictor.session
-            tf.Session()
             graph = sess.graph
             variables = graph.get_collection("variables")
             var_transition = variables[len(variables)-1]
             transition = var_transition.eval(session=sess)
-            batch_paths = self.decode(list(result_dict["logits"][0]), [original_len], transition)
+            batch_paths = self.decode(result_dict["logits"], result_dict["length"], transition)
             tags = [self.id_to_tag[idx] for idx in batch_paths[0]]
+            end_process_predict = time.time()
+            logger.info(
+                "after prediction in entity extracting time cost %.3f s" % (
+                            end_process_predict - begin_process_predict))
 
-            return result_dict
+            return result_to_json(inputs['text'], tags)
         else:
             return []
 
