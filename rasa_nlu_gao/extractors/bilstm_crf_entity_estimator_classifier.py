@@ -16,9 +16,8 @@ from tensorflow.contrib.crf import crf_log_likelihood
 from tensorflow.contrib.crf import viterbi_decode
 
 
+
 import typing
-
-
 try:
     import cPickle as pickle
 except ImportError:
@@ -27,11 +26,13 @@ except ImportError:
 
 
 from rasa_nlu_gao.extractors import EntityExtractor
-
-
+from tensorflow.tools.graph_transforms import TransformGraph
+from tensorflow.python import ops
+from tensorflow.python.saved_model import tag_constants
 from rasa_nlu_gao.utils.bilstm_utils import char_mapping, tag_mapping, prepare_dataset_for_estimator, iob_iobes, iob2, input_from_line_for_estimator, result_to_json
 from multiprocessing import cpu_count
 from tensorflow.contrib import predictor as Pred
+from tensorflow.python.tools import freeze_graph
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,7 @@ if typing.TYPE_CHECKING:
 
 try:
     import tensorflow as tf
+    #os.environ['TF_ENABLE_AUTO_MIXED_PRECISION'] = '1'
 except ImportError:
     tf = None
 
@@ -486,9 +488,41 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
         feature_spec = tf.feature_column.make_parse_example_spec(self.feature_columns)
         # build tf.example parser
         serving_input_receiver_fn = tf.estimator.export.build_parsing_serving_input_receiver_fn(feature_spec)
-        path = self.estimator.export_saved_model(model_dir, serving_input_receiver_fn)
+        path = self.estimator.export_saved_model(model_dir, serving_input_receiver_fn, as_text=False)
+
+        output_node = 'project/Reshape,Cast'
+        self.freeze_model(path.decode('utf-8'), output_node, "freeze_model.pb")
+
+        #begin to optimize the model
+        transforms = [
+             #'remove_nodes(op=Identity)',
+             #'merge_duplicate_nodes',
+             #'strip_unused_nodes',
+             #'fold_constants(ignore_errors=true)',
+             #'fold_batch_norms'
+        ]
+
+        #transforms = [
+        #    'quantize_nodes',
+        #    'quantize_weights'
+        #]
+
+
+
+
+
+        #optimize the export pb model
+        optimized_output = ['project/Reshape:0', 'Cast:0']
+        self.optimize_graph(path.decode('utf-8'), "freeze_model.pb", transforms, optimized_output)
+
+        #add graphdef to the model
+        #and convert the model back to the saved_model
+        optimized_export_dir = os.path.join(path.decode('utf-8'), 'optimizedir')
+        optimized_filepath = os.path.join(path.decode('utf-8'), 'saved_model.pb')
+        self.convert_graph_def_to_saved_model(optimized_export_dir, optimized_filepath)
+
         # decode model path to string
-        file_dir = os.path.basename(path).decode('utf-8')
+        file_dir = os.path.basename(path.decode('utf-8')) + "/"+ 'optimizedir'
 
         with io.open(os.path.join(
                 model_dir,
@@ -585,7 +619,7 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
             end_interal = time.time()
             logger.info("prepare for entity extracting time cost %.3f s" % (end_interal -start_interal))
             begin_predict_interal = time.time()
-            result_dict = self.predictor({'examples': examples})
+            result_dict = self.predictor({'input_example_tensor': examples})
             end_predict_interal = time.time()
             logger.info("prediction in entity extracting time cost %.3f s" % (end_predict_interal - begin_predict_interal))
 
@@ -627,3 +661,104 @@ class BilstmCRFEntityEstimatorExtractor(EntityExtractor):
 
             paths.append(path[1:])
         return paths
+
+    def get_graph_def_from_saved_model(self, saved_model_dir):
+        with tf.Session() as session:
+            meta_graph_def = tf.saved_model.loader.load(
+                session,
+                tags=[tag_constants.SERVING],
+                export_dir=saved_model_dir
+            )
+        return meta_graph_def.graph_def
+
+    def get_graph_def_from_file(self, graph_filepath):
+        with ops.Graph().as_default():
+            with tf.gfile.GFile(graph_filepath, 'rb') as f:
+                graph_def = tf.GraphDef()
+                graph_def.ParseFromString(f.read())
+                return graph_def
+
+
+    def optimize_graph(self, model_dir, graph_filename, transforms, output_node):
+        """
+        优化冻结完后的模型
+        :param model_dir:
+        :param graph_filename:
+        :param transforms:
+        :param output_node:
+        :return:
+        """
+        input_names = []
+        output_names = output_node
+        if graph_filename is None:
+            graph_def = self.get_graph_def_from_saved_model(model_dir)
+        else:
+            graph_def = self.get_graph_def_from_file(os.path.join(model_dir, graph_filename))
+        optimized_graph_def = TransformGraph(
+            graph_def,
+            input_names,
+            output_names,
+            transforms)
+
+
+        os.remove(os.path.join(model_dir, 'saved_model.pb'))
+
+        tf.train.write_graph(optimized_graph_def,
+                             logdir=model_dir,
+                             as_text=False,
+                             name='saved_model.pb')
+        print('Graph optimized!')
+
+    def convert_graph_def_to_saved_model(self, export_dir, graph_filepath):
+        """
+        将冻结完后，优化完后的模型转回SavedModel
+        :param export_dir:
+        :param graph_filepath:
+        :return:
+        """
+        if tf.gfile.Exists(export_dir):
+            tf.gfile.DeleteRecursively(export_dir)
+        graph_def = self.get_graph_def_from_file(graph_filepath)
+        with tf.Session(graph=tf.Graph()) as session:
+            tf.import_graph_def(graph_def, name='')
+            tf.saved_model.simple_save(
+                session,
+                export_dir,
+                inputs={
+                    node.name: session.graph.get_tensor_by_name(
+                        '{}:0'.format(node.name))
+                    for node in graph_def.node if node.op == 'Placeholder'},
+                outputs={
+                    'logits': session.graph.get_tensor_by_name(
+                    'project/Reshape:0'),
+                    'length':session.graph.get_tensor_by_name(
+                    'Cast:0')
+                }
+            )
+            print('Optimized graph converted to SavedModel!')
+
+    def freeze_model(self, saved_model_dir, output_node_names, output_filename):
+        """
+        freeze the model
+        :param output_node_names:
+        :param output_filename:
+        :return:
+        """
+        output_graph_filename = os.path.join(saved_model_dir, output_filename)
+        initializer_nodes = ''
+        freeze_graph.freeze_graph(
+            input_saved_model_dir=saved_model_dir,
+            output_graph=output_graph_filename,
+            saved_model_tags=tag_constants.SERVING,
+            output_node_names=output_node_names,
+            initializer_nodes=initializer_nodes,
+            input_graph=None,
+            input_saver=False,
+            input_binary=False,
+            input_checkpoint=None,
+            restore_op_name=None,
+            filename_tensor_name=None,
+            clear_devices=False,
+            input_meta_graph=False,
+        )
+        print('graph freezed!')
