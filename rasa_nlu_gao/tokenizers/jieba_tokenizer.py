@@ -41,9 +41,10 @@ class JiebaTokenizer(Tokenizer, Component):
 
         # path to dictionary file or None
         self.dictionary_path = self.component_config.get('dictionary_path')
+        jieba_userdicts = glob.glob("{}/*".format(self.dictionary_path))
 
         # load dictionary
-        if self.dictionary_path is not None:
+        if len(jieba_userdicts) > 0:
             self.load_custom_dictionary(self.dictionary_path)
 
 
@@ -81,21 +82,30 @@ class JiebaTokenizer(Tokenizer, Component):
     def train(self, training_data, config, **kwargs):
         # type: (TrainingData, RasaNLUModelConfig, **Any) -> None
 
-        if self.dictionary_path is None:
-            lookup_tables = training_data.lookup_tables
-            lookup_list = []
-            for item in lookup_tables:
-                lookup_list.extend(item["elements"])
 
-            timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+        self.dictionary_path = self.component_config.get('dictionary_path')
+        jieba_userdicts = glob.glob("{}/*".format(self.dictionary_path))
 
-            dictionary_path = os.path.join(os.getcwd(), "dictionary/dictionary_" + timestamp + ".txt")
-            dictionary_file = open(dictionary_path, "w", encoding='utf-8')
-            for word in lookup_list:
-                dictionary_file.write(word)
-                dictionary_file.write('\n')
-            dictionary_file.close()
-            self.dictionary_path = os.path.dirname(dictionary_path)
+
+        if len(jieba_userdicts) > 0:
+            for filepath in jieba_userdicts:
+                os.remove(filepath)
+
+
+        lookup_tables = training_data.lookup_tables
+        lookup_list = []
+        for item in lookup_tables:
+            lookup_list.extend(item["elements"])
+
+        timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+
+        dictionary_path = os.path.join(os.getcwd(), "dictionary/dictionary_" + timestamp + ".txt")
+        dictionary_file = open(dictionary_path, "w", encoding='utf-8')
+        for word in lookup_list:
+            dictionary_file.write(word)
+            dictionary_file.write('\n')
+        dictionary_file.close()
+        self.dictionary_path = os.path.dirname(dictionary_path)
 
         for example in training_data.training_examples:
             example.set("tokens", self.tokenize(example.text))

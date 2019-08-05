@@ -85,41 +85,6 @@ class BertVectorsFeaturizer(Featurizer):
 
         return np.squeeze(bert_embedding)
 
-    # def _get_message_text(self, message):
-    #     all_tokens = []
-    #
-    #
-    #
-    #     for msg in message:
-    #         msg_tokens = []
-    #         for t in msg.get("tokens"):
-    #             text = self._replace_number_blank(t.text)
-    #             if text != '':
-    #                 msg_tokens.append(text)
-    #         a = str(msg_tokens)
-    #         a = a.replace('[', '')
-    #         a = a.replace(']', '')
-    #         a = a.replace(',', '')
-    #         a = a.replace('\'', '')
-    #         a = a.replace(' ', '')
-    #         all_tokens.append(list(a))
-    #
-    #     logger.info("bert vectors featurizer finished")
-    #
-    #     try:
-    #         bert_embedding = self.bc.encode(all_tokens, is_tokenized=True)
-    #
-    #
-    #         bert_embedding = np.squeeze(bert_embedding)
-    #
-    #
-    #     except Exception as e:
-    #         bert_embedding = np.squeeze(np.random.normal(loc=0.0, scale=1.0, size=(1, 768)))
-    #         logger.info("error in creating train example")
-    #         logger.info(e)
-    #
-    #     return bert_embedding
-
 
     def train(self, training_data, cfg=None, **kwargs):
         batch_size = self.component_config['batch_size']
