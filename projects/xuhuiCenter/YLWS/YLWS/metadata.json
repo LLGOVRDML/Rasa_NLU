@@ -1,0 +1,81 @@
+{
+    "language": "zh",
+    "pipeline": [
+        {
+            "dictionary_path": "tokenizer_jieba",
+            "name": "tokenizer_jieba",
+            "class": "rasa_nlu_gao.tokenizers.jieba_tokenizer.JiebaTokenizer"
+        },
+        {
+            "ip": "192.168.1.75",
+            "port": 5555,
+            "port_out": 5556,
+            "show_server_config": true,
+            "output_fmt": "ndarray",
+            "check_version": true,
+            "timeout": 10000,
+            "identity": null,
+            "batch_size": 128,
+            "name": "bert_vectors_featurizer",
+            "class": "rasa_nlu_gao.featurizers.bert_vectors_featurizer.BertVectorsFeaturizer"
+        },
+        {
+            "batch_size": 32,
+            "epochs": 2000,
+            "intent_tokenization_flag": false,
+            "intent_split_symbol": "_",
+            "config_proto": {
+                "device_count": 12,
+                "inter_op_parallelism_threads": 0,
+                "intra_op_parallelism_threads": 0,
+                "allow_growth": true,
+                "allocator_type": "BFC",
+                "per_process_gpu_memory_fraction": 0.25
+            },
+            "name": "intent_estimator_classifier_tensorflow_embedding_bert",
+            "classifier_file": "1564452445",
+            "class": "rasa_nlu_gao.classifiers.embedding_bert_intent_estimator_classifier.EmbeddingBertIntentEstimatorClassifier"
+        },
+        {
+            "name": "intent_entity_featurizer_regex",
+            "regex_file": "regex_featurizer.json",
+            "class": "rasa_nlu_gao.featurizers.regex_featurizer.RegexFeaturizer"
+        },
+        {
+            "lr": 0.001,
+            "char_dim": 100,
+            "lstm_dim": 100,
+            "batches_per_epoch": 10,
+            "seg_dim": 20,
+            "num_segs": 4,
+            "batch_size": 10,
+            "zeros": true,
+            "tag_schema": "iobes",
+            "lower": false,
+            "model_type": "bilstm",
+            "clip": 5,
+            "optimizer": "adam",
+            "dropout_keep": 0.5,
+            "steps_check": 100,
+            "config_proto": {
+                "device_count": 12,
+                "inter_op_parallelism_threads": 0,
+                "intra_op_parallelism_threads": 0,
+                "allow_growth": true,
+                "allocator_type": "BFC",
+                "per_process_gpu_memory_fraction": 0.25
+            },
+            "name": "ner_bilstm_crf",
+            "classifier_file": null,
+            "class": "rasa_nlu_gao.extractors.bilstm_crf_entity_extractor.BilstmCRFEntityExtractor"
+        },
+        {
+            "name": "ner_synonyms",
+            "synonyms_file": "entity_synonyms.json",
+            "class": "rasa_nlu_gao.extractors.entity_synonyms.EntitySynonymMapper"
+        }
+    ],
+    "training_data": "training_data.json",
+    "trained_at": "20190730-100726",
+    "rasa_nlu_version": "0.13.4"
+}

@@ -162,6 +162,8 @@ class DataRouter(object):
         bot_model_dict = {}
 
         for project in projects:
+            if project == ".DS_Store":
+                continue
             print(os.path.join(project_dir,project))
             for botId in os.listdir(os.path.join(project_dir,project)):
                 bot_model_dict[botId]=Project(self.component_builder,

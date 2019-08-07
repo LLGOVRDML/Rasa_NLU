@@ -41,6 +41,7 @@ class LuisReader(JsonTrainingDataReader):
                 if len(item.get("list")) > 0:
                     for synonyms_item in item.get("list"):
                         synonyms_dict[synonyms_item] = item.get("canonicalForm")
+                        synonyms_dict[item.get("canonicalForm")] = item.get("canonicalForm")
 
                     lookup_dict["name"]=name
                     elements_list.append(item.get("canonicalForm"))

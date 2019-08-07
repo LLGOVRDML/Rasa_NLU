@@ -253,7 +253,7 @@ class EmbeddingBertIntentEstimatorClassifier(Component):
         config_proto = self.get_config_proto(self.component_config)
 
         # sparse_softmax_cross_entropy , build linear classified model
-        self.estimator = tf.estimator.LinearEstimator(
+        self.estimator = tf.contrib.estimator.LinearEstimator(
                                                      head = head,
                                                      feature_columns=self.feature_columns,
                                                      optimizer='Ftrl',

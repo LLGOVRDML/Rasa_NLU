@@ -1,0 +1,142 @@
+[
+    {
+        "name": "人员类型",
+        "pattern": "(父母|老人|年纪大)",
+        "resolution": "老人"
+    },
+    {
+        "name": "人员类型",
+        "pattern": "(孩子|小孩|女儿|儿子)",
+        "resolution": "小孩"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(男姓名|男方名字|男方姓名|builtin.personName.男方姓名)",
+        "resolution": "builtin.personName.男方姓名"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(女方姓名|builtin.personName.女方姓名|女方名字|女姓名|产妇名字)",
+        "resolution": "builtin.personName.女方姓名"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(承租人姓名|房客姓名|承租人名字|builtin.personName.承租人姓名|房客名字)",
+        "resolution": "builtin.personName.承租人姓名"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(房东姓名|builtin.personName.出租人姓名|出租人姓名|房东名字|出租人名字)",
+        "resolution": "builtin.personName.出租人姓名"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(身份证号码.出租人身份证|房东身份证|出租人身份证)",
+        "resolution": "身份证号码.出租人身份证"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(承租人身份证|身份证号码.承租人身份证|房客身份证)",
+        "resolution": "身份证号码.承租人身份证"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(出租人电话|手机号码.出租人电话)",
+        "resolution": "手机号码.出租人电话"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(承租人电话|手机号码.承租人电话)",
+        "resolution": "手机号码.承租人电话"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(女方电话|女方手机|手机号码.女方电话)",
+        "resolution": "手机号码.女方电话"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(租金|房租|数值.租金)",
+        "resolution": "数值.租金"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(数值.建筑面积|面积|建筑面积|房屋面即|房屋面积)",
+        "resolution": "数值.建筑面积"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(女方身份证|身份证号码.女方身份证|产妇身份证)",
+        "resolution": "身份证号码.女方身份证"
+    },
+    {
+        "name": "流程项目",
+        "pattern": "(身份证号码.男方身份证|男方身份证)",
+        "resolution": "身份证号码.男方身份证"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(徐家汇|徐家汇街道)",
+        "resolution": "徐家汇街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(天平路街道|天平路|天平)",
+        "resolution": "天平路街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(湖南|湖南路街道|湖南路)",
+        "resolution": "湖南路街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(斜土路|斜土路街道|斜土)",
+        "resolution": "斜土路街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(枫林|枫林路街道|枫林路)",
+        "resolution": "枫林路街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(长桥|长桥街道)",
+        "resolution": "长桥街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(虹梅路街道|虹梅|虹梅路)",
+        "resolution": "虹梅路街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(田林街道|田林)",
+        "resolution": "田林街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(康健新村街道|康健新村|康健)",
+        "resolution": "康健新村街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(漕河泾|漕河泾街道)",
+        "resolution": "漕河泾街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(龙华街道|龙华)",
+        "resolution": "龙华街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(凌云|凌云路|凌云路街道)",
+        "resolution": "凌云路街道"
+    },
+    {
+        "name": "街道名称",
+        "pattern": "(华泾镇|华泾)",
+        "resolution": "华泾镇"
+    }
+]

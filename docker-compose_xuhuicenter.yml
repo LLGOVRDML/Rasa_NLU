@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  rasa_xuhuicenter:
+    image: rasa_xuhuicenter:1.0
+    ports:
+    - "5000:5000"
+    volumes:
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/config_embedding_bert_intent_estimator_classifier.yml:/usr/local/src/sample_configs/config_embedding_bert_intent_estimator_classifier.yml
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/common_metadata.json:/usr/local/src/projects/Common/Common/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/fg_metadata.json:/usr/local/src/projects/FG/FG/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/gszd_metadata.json:/usr/local/src/projects/GSZD/GSZD/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/jlls_metadata.json:/usr/local/src/projects/JLLS/JLLS/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/jsht_metadata.json:/usr/local/src/projects/JSHT/JSHT/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/jt_metadata.json:/usr/local/src/projects/JT/JT/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/jzzjf_metadata.json:/usr/local/src/projects/JZZJF/JZZJF/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/lh_metadata.json:/usr/local/src/projects/LH/LH/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/qydj_metadata.json:/usr/local/src/projects/QYDJ/QYDJ/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/spjy_metadata.json:/usr/local/src/projects/SPJY/SPJY/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/tzsb_metadata.json:/usr/local/src/projects/TZSB/TZSB/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/ylws_metadata.json:/usr/local/src/projects/YLWS/YLWS/metadata.json
+    - /Users/zhaoruifei/Work/Pactera/NLP/config/xuhuicenter/ztg_metadata.json:/usr/local/src/projects/ZTG/ZTG/metadata.json

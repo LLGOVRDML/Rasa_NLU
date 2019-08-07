@@ -1,0 +1,32 @@
+[
+    {
+        "name": "残疾类型",
+        "pattern": "(疯子|自闭|精神病|精神)",
+        "resolution": "精神"
+    },
+    {
+        "name": "残疾类型",
+        "pattern": "(傻子|脑残|弱智|脑力|智商|智力)",
+        "resolution": "智力"
+    },
+    {
+        "name": "残疾类型",
+        "pattern": "(腿|脊椎|四肢|手臂|肢体)",
+        "resolution": "肢体"
+    },
+    {
+        "name": "残疾类型",
+        "pattern": "(语言|哑巴|说话|言语)",
+        "resolution": "言语"
+    },
+    {
+        "name": "残疾类型",
+        "pattern": "(听力|听觉|听不见|耳聋)",
+        "resolution": "听力"
+    },
+    {
+        "name": "残疾类型",
+        "pattern": "(瞎子|视力|视觉|失明)",
+        "resolution": "视力"
+    }
+]
