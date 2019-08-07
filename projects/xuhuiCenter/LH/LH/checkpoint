@@ -1,2 +1,0 @@
-model_checkpoint_path: "/Users/zhaoruifei/Work/Pactera/NLP/xiaohua/Rasa_xiaohua/projects/default/default/ner_bilstm_crf.ckpt"
-all_model_checkpoint_paths: "/Users/zhaoruifei/Work/Pactera/NLP/xiaohua/Rasa_xiaohua/projects/default/default/ner_bilstm_crf.ckpt"
