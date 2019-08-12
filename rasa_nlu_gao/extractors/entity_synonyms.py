@@ -123,7 +123,7 @@ class EntitySynonymMapper(EntityExtractor):
                 self.add_processor_name(entity)
         returnEntities = []
         for entity in entities:
-            if entity["resolution"]:
+            if 'resolution' in entity:
                 resList = [item["resolution"] for item in self.lookup_tables]
                 matchList=[]
                 # if entity['resolution']['values'][0] not in resList:
